@@ -38,12 +38,15 @@ set_error(struct jsonsink *s, int error)
 static void
 write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
 {
-        char *dest = (char *)s->buf + s->bufpos;
-        s->bufpos += valuelen;
-        if (s->bufpos > s->buflen) {
-                set_error(s, JSONSINK_ERROR_BUFFEROVERFLOW);
-                return;
+        size_t newbufpos = s->bufpos + valuelen;
+        if (newbufpos > s->buflen) {
+                if (!jsonsink_flush(s, valuelen)) {
+                        return;
+                }
+                newbufpos = s->bufpos + valuelen;
         }
+        char *dest = (char *)s->buf + s->bufpos;
+        s->bufpos = newbufpos;
         memcpy(dest, value, valuelen);
 }
 
@@ -72,11 +75,17 @@ jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen)
 {
         s->buf = buf;
         s->buflen = buflen;
+        s->bufpos = 0;
 }
 
-void
-jsonsink_clear(struct jsonsink *s)
+bool
+jsonsink_flush(struct jsonsink *s, size_t needed)
 {
+        if (s->flush == NULL || !s->flush(s, needed)) {
+                set_error(s, JSONSINK_ERROR_FLUSH_FAILED);
+                return false;
+        }
+        return true;
 }
 
 int

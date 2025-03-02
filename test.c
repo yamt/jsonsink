@@ -29,13 +29,25 @@
 
 #include "jsonsink.h"
 
+static bool
+flush(struct jsonsink *s, size_t needed)
+{
+        size_t nwritten = fwrite(s->buf, 1, s->bufpos, stdout);
+        if (nwritten != s->bufpos) {
+                return false;
+        }
+        s->bufpos = 0;
+        return true;
+}
+
 int
 main(int argc, char **argv)
 {
-        char buf[1000];
+        char buf[64];
         struct jsonsink s;
         jsonsink_init(&s);
         jsonsink_set_buffer(&s, buf, sizeof(buf));
+        s.flush = flush;
         jsonsink_object_start(&s);
         JSONSINK_ADD_LITERAL_KEY(&s, "key1");
         jsonsink_object_start(&s);
@@ -46,7 +58,7 @@ main(int argc, char **argv)
         JSONSINK_ADD_LITERAL_KEY(&s, "array1");
         jsonsink_array_start(&s);
         uint32_t i;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 100; i++) {
                 jsonsink_object_start(&s);
                 JSONSINK_ADD_LITERAL_KEY(&s, "version");
                 JSONSINK_ADD_LITERAL(&s, "2");
@@ -72,13 +84,10 @@ main(int argc, char **argv)
         jsonsink_array_end(&s);
         jsonsink_object_end(&s);
         jsonsink_object_end(&s);
+        jsonsink_flush(&s, 0);
         int error = jsonsink_error(&s);
-        void *p = jsonsink_pointer(&s);
-        size_t sz = jsonsink_size(&s);
-        jsonsink_clear(&s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);
                 return 1;
         }
-        fwrite(p, sz, 1, stdout);
 }

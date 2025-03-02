@@ -35,13 +35,25 @@ extern "C" {
 #endif
 
 #define JSONSINK_OK 0
-#define JSONSINK_ERROR_BUFFEROVERFLOW 1
+#define JSONSINK_ERROR_FLUSH_FAILED 1
 #define JSONSINK_ERROR_SERIALIZATION 2
 
 struct jsonsink {
-        void *buf;
-        size_t buflen;
-        size_t bufpos;
+        void *buf;     /* buffer to write */
+        size_t buflen; /* the size of the buffer */
+        size_t bufpos; /* the next position to write in the buffer */
+
+        /*
+         * the `flush` callback is used to make a space in the buffer.
+         * it should make at least `needed` bytes available at `s->bufpos`.
+         * it returns true on success.
+         *
+         * there are at least a few implemetation strategies:
+         * - process the data in the buffer and empty it. (by `s->bufpos = 0`)
+         * - extend the buffer. (eg. realloc)
+         * - replace the buffer with a new one.
+         */
+        bool (*flush)(struct jsonsink *s, size_t needed);
         int error;
         bool need_comma;
 };
@@ -52,6 +64,7 @@ struct jsonsink {
 
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
+bool jsonsink_flush(struct jsonsink *s, size_t needed);
 void jsonsink_clear(struct jsonsink *s);
 int jsonsink_error(const struct jsonsink *s);
 void jsonsink_set_error(struct jsonsink *s, int error);

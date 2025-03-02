@@ -67,7 +67,7 @@ jsonsink_add_double(struct jsonsink *s, double v)
                 return;
         }
         if (ret >= sizeof(buf)) {
-                jsonsink_set_error(s, JSONSINK_ERROR_BUFFEROVERFLOW);
+                jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
         jsonsink_add_serialized_value(s, buf, ret);
