@@ -39,6 +39,10 @@ struct jsonsink {
         bool need_comma;
 };
 
+/*
+ * core api
+ */
+
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
 void jsonsink_clear(struct jsonsink *s);
@@ -58,9 +62,20 @@ void jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
 void jsonsink_array_start(struct jsonsink *s);
 void jsonsink_array_end(struct jsonsink *s);
 
+/*
+ * serialize-and-add style functions.
+ *
+ * the current implementations of these functions are just
+ * snprintf + jsonsink_add_serialized_value.
+ */
+
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
 void jsonsink_add_int32(struct jsonsink *s, int32_t v);
 void jsonsink_add_double(struct jsonsink *s, double v);
+
+/*
+ * convenience macros to use C literals.
+ */
 
 #define JSONSINK_LITERAL_QUOTE(cstr) "\"" cstr "\"", sizeof(cstr) + 1
 #define JSONSINK_LITERAL(cstr) cstr, sizeof(cstr) - 1
