@@ -74,6 +74,11 @@ void jsonsink_array_end(struct jsonsink *s);
  *
  * the current implementations of these functions are just
  * snprintf + jsonsink_add_serialized_value.
+ *
+ * if you care performance of the string conversion, you might
+ * want to use something like https://github.com/koendv/FloatToAscii
+ * instead of snprintf and then add the result with
+ * jsonsink_add_serialized_value.
  */
 
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
