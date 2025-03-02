@@ -58,16 +58,37 @@ void jsonsink_set_error(struct jsonsink *s, int error);
 void *jsonsink_pointer(const struct jsonsink *s);
 size_t jsonsink_size(const struct jsonsink *s);
 
+/*
+ * the api to create JSON object and array.
+ *
+ * the library doesn't validate if start/end are balanced well.
+ * it's the user's responsibily to call them in a sane way.
+ */
+
 void jsonsink_object_start(struct jsonsink *s);
 void jsonsink_object_end(struct jsonsink *s);
+
+void jsonsink_array_start(struct jsonsink *s);
+void jsonsink_array_end(struct jsonsink *s);
+
+/*
+ * the api to deal with serialized key/value.
+ *
+ * these functions add a value (or key) which is already serialized.
+ *
+ * "already serialized" here means it's just memcpy-able into
+ * the buffer to be a part of a serialized JSON.
+ * for example, a string should be escaped if necessary and quoted
+ * with double quotation marks.
+ * the library blindly uses the given serialized value as it is
+ * without any validations. it's the user's responsibility to pass
+ * a sane value.
+ */
 
 void jsonsink_add_serialized_key(struct jsonsink *s, const char *key,
                                  size_t keylen);
 void jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
                                    size_t valuelen);
-
-void jsonsink_array_start(struct jsonsink *s);
-void jsonsink_array_end(struct jsonsink *s);
 
 /*
  * serialize-and-add style functions.
