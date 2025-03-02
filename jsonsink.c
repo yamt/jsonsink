@@ -11,18 +11,6 @@ set_error(struct jsonsink *s, int error)
 }
 
 static void
-write_char(struct jsonsink *s, char ch)
-{
-        char *dest = (char *)s->buf + s->bufpos;
-        s->bufpos += 1;
-        if (s->bufpos > s->buflen) {
-                set_error(s, JSONSINK_ERROR_BUFFEROVERFLOW);
-                return;
-        }
-        *(char *)dest = ch;
-}
-
-static void
 write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
 {
         char *dest = (char *)s->buf + s->bufpos;
@@ -32,6 +20,12 @@ write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
                 return;
         }
         memcpy(dest, value, valuelen);
+}
+
+static void
+write_char(struct jsonsink *s, char ch)
+{
+        write_serialized(s, &ch, 1);
 }
 
 static void
