@@ -57,6 +57,8 @@ main(int argc, char **argv)
         jsonsink_add_double(&s, -1.2345);
         jsonsink_add_uint32(&s, 54321);
         jsonsink_add_int32(&s, -54321);
+        jsonsink_add_escaped_string(&s, JSONSINK_LITERAL("foo"));
+        jsonsink_add_serialized_value(&s, JSONSINK_LITERAL_QUOTE("foo"));
         jsonsink_array_end(&s);
         jsonsink_array_end(&s);
         jsonsink_object_end(&s);

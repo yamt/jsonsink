@@ -83,12 +83,19 @@ void jsonsink_array_end(struct jsonsink *s);
  * the library blindly uses the given serialized value as it is
  * without any validations. it's the user's responsibility to pass
  * a sane value.
+ *
+ * jsonsink_add_escaped_string only quotes the given string.
+ * it's the user's responsibily to pass the string which doesn't
+ * need further escaping. that is, it doesn't contain '"', '\\', '\0',
+ * or control characters.
  */
 
 void jsonsink_add_serialized_key(struct jsonsink *s, const char *key,
                                  size_t keylen);
 void jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
                                    size_t valuelen);
+void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
+                                 size_t valuelen);
 
 /*
  * serialize-and-add style functions.

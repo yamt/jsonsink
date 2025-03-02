@@ -137,6 +137,17 @@ jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
 }
 
 void
+jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
+                            size_t valuelen)
+{
+        may_write_comma(s);
+        write_char(s, '"');
+        write_serialized(s, value, valuelen);
+        write_char(s, '"');
+        s->need_comma = true;
+}
+
+void
 jsonsink_array_start(struct jsonsink *s)
 {
         may_write_comma(s);
