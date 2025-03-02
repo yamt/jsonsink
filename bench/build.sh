@@ -17,3 +17,12 @@ c++ -g -O2 -flto=full \
 bench.c \
 rng.c \
 rapidjson.cxx
+
+PARSON=deps/parson
+cc -g -O2 -flto=full \
+-o parson \
+-I ${PARSON} \
+bench.c \
+rng.c \
+parson.c \
+${PARSON}/parson.c
