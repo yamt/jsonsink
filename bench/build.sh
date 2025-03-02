@@ -9,3 +9,11 @@ rng.c \
 jsonsink.c \
 ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization.c
+
+RAPIDJSON=deps/rapidjson/include
+c++ -g -O2 -flto=full \
+-o rapidjson \
+-I ${RAPIDJSON} \
+bench.c \
+rng.c \
+rapidjson.cxx
