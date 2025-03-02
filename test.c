@@ -54,6 +54,9 @@ main(int argc, char **argv)
         JSONSINK_ADD_LITERAL(&s, "2");
         JSONSINK_ADD_LITERAL(&s, "2");
         JSONSINK_ADD_LITERAL(&s, "2");
+        jsonsink_add_double(&s, -1.2345);
+        jsonsink_add_uint32(&s, 54321);
+        jsonsink_add_int32(&s, -54321);
         jsonsink_array_end(&s);
         jsonsink_array_end(&s);
         jsonsink_object_end(&s);

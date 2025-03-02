@@ -32,7 +32,7 @@
 #include "jsonsink.h"
 
 void
-jsonsink_add_value_uint32(struct jsonsink *s, uint32_t v)
+jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
 {
         char buf[sizeof("4294967295")];
         int ret = snprintf(buf, sizeof(buf), "%" PRIu32, v);
@@ -41,5 +41,34 @@ jsonsink_add_value_uint32(struct jsonsink *s, uint32_t v)
                 return;
         }
         assert(ret < sizeof(buf));
+        jsonsink_add_serialized_value(s, buf, ret);
+}
+
+void
+jsonsink_add_int32(struct jsonsink *s, int32_t v)
+{
+        char buf[sizeof("-2147483648")];
+        int ret = snprintf(buf, sizeof(buf), "%" PRId32, v);
+        if (ret < 0) {
+                jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
+                return;
+        }
+        assert(ret < sizeof(buf));
+        jsonsink_add_serialized_value(s, buf, ret);
+}
+
+void
+jsonsink_add_double(struct jsonsink *s, double v)
+{
+        char buf[64];
+        int ret = snprintf(buf, sizeof(buf), "%1.17g", v);
+        if (ret < 0) {
+                jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
+                return;
+        }
+        if (ret >= sizeof(buf)) {
+                jsonsink_set_error(s, JSONSINK_ERROR_BUFFEROVERFLOW);
+                return;
+        }
         jsonsink_add_serialized_value(s, buf, ret);
 }
