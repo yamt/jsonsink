@@ -46,16 +46,9 @@ flush(struct jsonsink *s, size_t needed)
         return true;
 }
 
-int
-main(int argc, char **argv)
+static void
+build(struct jsonsink *s)
 {
-        struct sink sink;
-        char buf[64];
-        struct jsonsink *s = &sink.s;
-        jsonsink_init(s);
-        jsonsink_set_buffer(s, buf, sizeof(buf));
-        sink.fp = stdout;
-        s->flush = flush;
         jsonsink_object_start(s);
         JSONSINK_ADD_LITERAL_KEY(s, "key1");
         jsonsink_object_start(s);
@@ -92,6 +85,19 @@ main(int argc, char **argv)
         jsonsink_array_end(s);
         jsonsink_object_end(s);
         jsonsink_object_end(s);
+}
+
+int
+main(int argc, char **argv)
+{
+        struct sink sink;
+        char buf[64];
+        struct jsonsink *s = &sink.s;
+        jsonsink_init(s);
+        jsonsink_set_buffer(s, buf, sizeof(buf));
+        sink.fp = stdout;
+        s->flush = flush;
+        build(s);
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
