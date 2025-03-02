@@ -119,35 +119,6 @@ jsonsink_object_end(struct jsonsink *s)
 }
 
 void
-jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
-{
-        may_write_comma(s);
-        write_serialized(s, key, keylen);
-        write_char(s, ':');
-        s->need_comma = false;
-}
-
-void
-jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
-                              size_t valuelen)
-{
-        may_write_comma(s);
-        write_serialized(s, value, valuelen);
-        s->need_comma = true;
-}
-
-void
-jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
-                            size_t valuelen)
-{
-        may_write_comma(s);
-        write_char(s, '"');
-        write_serialized(s, value, valuelen);
-        write_char(s, '"');
-        s->need_comma = true;
-}
-
-void
 jsonsink_array_start(struct jsonsink *s)
 {
         may_write_comma(s);
@@ -176,4 +147,33 @@ jsonsink_add_bool(struct jsonsink *s, bool v)
         } else {
                 jsonsink_add_serialized_value(s, JSONSINK_LITERAL("false"));
         }
+}
+
+void
+jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
+{
+        may_write_comma(s);
+        write_serialized(s, key, keylen);
+        write_char(s, ':');
+        s->need_comma = false;
+}
+
+void
+jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
+                              size_t valuelen)
+{
+        may_write_comma(s);
+        write_serialized(s, value, valuelen);
+        s->need_comma = true;
+}
+
+void
+jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
+                            size_t valuelen)
+{
+        may_write_comma(s);
+        write_char(s, '"');
+        write_serialized(s, value, valuelen);
+        write_char(s, '"');
+        s->need_comma = true;
 }
