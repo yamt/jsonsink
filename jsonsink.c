@@ -37,7 +37,7 @@ write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
 static void
 may_write_comma(struct jsonsink *s)
 {
-        if (s->need_comma[s->level]) {
+        if (s->need_comma) {
                 write_char(s, ',');
         }
 }
@@ -89,16 +89,14 @@ jsonsink_object_start(struct jsonsink *s)
 {
         may_write_comma(s);
         write_char(s, '{');
-        s->need_comma[s->level] = true;
-        s->level++;
-        s->need_comma[s->level] = false;
+        s->need_comma = false;
 }
 
 void
 jsonsink_object_end(struct jsonsink *s)
 {
-        s->level--;
         write_char(s, '}');
+        s->need_comma = true;
 }
 
 void
@@ -107,7 +105,7 @@ jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
         may_write_comma(s);
         write_serialized(s, key, keylen);
         write_char(s, ':');
-        s->need_comma[s->level] = false;
+        s->need_comma = false;
 }
 
 void
@@ -116,7 +114,7 @@ jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
 {
         may_write_comma(s);
         write_serialized(s, value, valuelen);
-        s->need_comma[s->level] = true;
+        s->need_comma = true;
 }
 
 void
@@ -124,14 +122,12 @@ jsonsink_array_start(struct jsonsink *s)
 {
         may_write_comma(s);
         write_char(s, '[');
-        s->need_comma[s->level] = true;
-        s->level++;
-        s->need_comma[s->level] = false;
+        s->need_comma = false;
 }
 
 void
 jsonsink_array_end(struct jsonsink *s)
 {
-        s->level--;
         write_char(s, ']');
+        s->need_comma = true;
 }

@@ -13,9 +13,8 @@ struct jsonsink {
         void *buf;
         size_t buflen;
         size_t bufpos;
-        unsigned int level; /* object/array nest level */
         int error;
-        bool need_comma[JSONSINK_MAX_NEST];
+        bool need_comma;
 };
 
 void jsonsink_init(struct jsonsink *s);
