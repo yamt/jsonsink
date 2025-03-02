@@ -46,9 +46,9 @@ struct jsonsink {
         bool need_comma;
 };
 
-/*
+/**************************************************************************
  * core api
- */
+ **************************************************************************/
 
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
@@ -105,6 +105,25 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
                                  size_t valuelen);
 
 /*
+ * convenience macros to use C literals.
+ */
+
+#define JSONSINK_LITERAL_QUOTE(cstr) "\"" cstr "\"", sizeof(cstr) + 1
+#define JSONSINK_LITERAL(cstr) cstr, sizeof(cstr) - 1
+#define JSONSINK_ADD_LITERAL_KEY(s, l)                                        \
+        jsonsink_add_serialized_key(s, JSONSINK_LITERAL_QUOTE(l))
+#define JSONSINK_ADD_LITERAL(s, l)                                            \
+        jsonsink_add_serialized_value(s, JSONSINK_LITERAL(l))
+#define JSONSINK_ADD_LITERAL_STRING(s, l)                                     \
+        jsonsink_add_serialized_value(s, JSONSINK_LITERAL_QUOTE(l))
+
+/**************************************************************************
+ * serialization utility api
+ *
+ * note: these functions are expected slow.
+ **************************************************************************/
+
+/*
  * serialize-and-add style functions.
  *
  * the current implementations of these functions are just
@@ -119,19 +138,6 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
 void jsonsink_add_int32(struct jsonsink *s, int32_t v);
 void jsonsink_add_double(struct jsonsink *s, double v);
-
-/*
- * convenience macros to use C literals.
- */
-
-#define JSONSINK_LITERAL_QUOTE(cstr) "\"" cstr "\"", sizeof(cstr) + 1
-#define JSONSINK_LITERAL(cstr) cstr, sizeof(cstr) - 1
-#define JSONSINK_ADD_LITERAL_KEY(s, l)                                        \
-        jsonsink_add_serialized_key(s, JSONSINK_LITERAL_QUOTE(l))
-#define JSONSINK_ADD_LITERAL(s, l)                                            \
-        jsonsink_add_serialized_value(s, JSONSINK_LITERAL(l))
-#define JSONSINK_ADD_LITERAL_STRING(s, l)                                     \
-        jsonsink_add_serialized_value(s, JSONSINK_LITERAL_QUOTE(l))
 
 #if defined(__cplusplus)
 }
