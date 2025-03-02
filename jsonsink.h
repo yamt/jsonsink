@@ -151,7 +151,8 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * - https://github.com/miloyip/itoa-benchmark
  *
  * jsonsink_add_double doesn't support nan or inf. it's the user's
- * responsibility to avoid passing them.
+ * responsibility to avoid passing them. note that JSON itself doesn't
+ * have nan or inf.
  */
 
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
