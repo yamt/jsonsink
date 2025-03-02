@@ -36,23 +36,13 @@ set_error(struct jsonsink *s, int error)
 }
 
 static void
-write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
+write_serialized(struct jsonsink *s, const void *value, size_t len)
 {
-        size_t newbufpos = s->bufpos + valuelen;
-        if (newbufpos > s->buflen) {
-                if (s->flush != NULL) {
-                        if (!jsonsink_flush(s, valuelen)) {
-                                return;
-                        }
-                } else {
-                        s->bufpos = newbufpos;
-                        return;
-                }
-                newbufpos = s->bufpos + valuelen;
+        void *dest = jsonsink_reserve_buffer(s, len);
+        if (dest != NULL) {
+                memcpy(dest, value, len);
         }
-        char *dest = (char *)s->buf + s->bufpos;
-        s->bufpos = newbufpos;
-        memcpy(dest, value, valuelen);
+        jsonsink_commit_buffer(s, len);
 }
 
 static void
@@ -167,6 +157,42 @@ jsonsink_add_bool(struct jsonsink *s, bool v)
         } else {
                 jsonsink_add_serialized_value(s, JSONSINK_LITERAL("false"));
         }
+}
+
+void *
+jsonsink_reserve_buffer(struct jsonsink *s, size_t len)
+{
+        size_t newbufpos = s->bufpos + len;
+        if (newbufpos > s->buflen) {
+                if (s->flush != NULL) {
+                        if (!jsonsink_flush(s, len)) {
+                                return NULL;
+                        }
+                } else {
+                        return NULL;
+                }
+        }
+        return (char *)s->buf + s->bufpos;
+}
+
+void
+jsonsink_commit_buffer(struct jsonsink *s, size_t len)
+{
+        s->bufpos += len;
+}
+
+void *
+jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len)
+{
+        may_write_comma(s);
+        return jsonsink_reserve_buffer(s, len);
+}
+
+void
+jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
+{
+        jsonsink_commit_buffer(s, len);
+        s->need_comma = true;
 }
 
 void

@@ -34,41 +34,44 @@
 void
 jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
 {
-        char buf[sizeof("4294967295")];
-        int ret = snprintf(buf, sizeof(buf), "%" PRIu32, v);
+        const size_t maxlen = sizeof("4294967295");
+        void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
+        int ret = snprintf(dest, dest != NULL ? maxlen : 0, "%" PRIu32, v);
         if (ret < 0) {
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        assert(ret < sizeof(buf));
-        jsonsink_add_serialized_value(s, buf, ret);
+        assert(ret < maxlen);
+        jsonsink_add_serialized_value_commit(s, ret);
 }
 
 void
 jsonsink_add_int32(struct jsonsink *s, int32_t v)
 {
-        char buf[sizeof("-2147483648")];
-        int ret = snprintf(buf, sizeof(buf), "%" PRId32, v);
+        const size_t maxlen = sizeof("-2147483648");
+        void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
+        int ret = snprintf(dest, dest != NULL ? maxlen : 0, "%" PRId32, v);
         if (ret < 0) {
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        assert(ret < sizeof(buf));
-        jsonsink_add_serialized_value(s, buf, ret);
+        assert(ret < maxlen);
+        jsonsink_add_serialized_value_commit(s, ret);
 }
 
 void
 jsonsink_add_double(struct jsonsink *s, double v)
 {
-        char buf[64];
-        int ret = snprintf(buf, sizeof(buf), "%1.17g", v);
+        const size_t maxlen = 64;
+        void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
+        int ret = snprintf(dest, dest != NULL ? maxlen : 0, "%1.17g", v);
         if (ret < 0) {
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        if (ret >= sizeof(buf)) {
+        if (ret >= maxlen) {
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        jsonsink_add_serialized_value(s, buf, ret);
+        jsonsink_add_serialized_value_commit(s, ret);
 }
