@@ -144,9 +144,11 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * snprintf + jsonsink_add_serialized_value.
  *
  * if you care performance of the string conversion, you might
- * want to use something like https://github.com/koendv/FloatToAscii
- * instead of snprintf and then add the result with
- * jsonsink_add_serialized_value.
+ * want to use an optimized implemontation instead of snprintf and then
+ * add the result with jsonsink_add_serialized_value.
+ * cf.
+ * - https://github.com/miloyip/dtoa-benchmark
+ * - https://github.com/miloyip/itoa-benchmark
  *
  * jsonsink_add_double doesn't support nan or inf. it's the user's
  * responsibility to avoid passing them.
