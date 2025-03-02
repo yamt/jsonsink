@@ -141,6 +141,10 @@ static bool
 realloc_flush(struct jsonsink *s, size_t needed)
 {
         size_t newsize = s->bufpos + needed;
+        if (s->buflen > newsize) {
+                return true;
+        }
+        newsize += newsize / 2;
         void *p = realloc(s->buf, newsize);
         if (p == NULL) {
                 return false;
