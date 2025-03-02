@@ -27,10 +27,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#if !defined(JSONSINK_MAX_NEST)
-#define JSONSINK_MAX_NEST 8
-#endif
-
 #define JSONSINK_OK 0
 #define JSONSINK_ERROR_BUFFEROVERFLOW 1
 #define JSONSINK_ERROR_SERIALIZATION 2
