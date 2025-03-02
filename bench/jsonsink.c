@@ -70,7 +70,6 @@ build(struct jsonsink *s, unsigned int n, const double *data_double,
         }
         jsonsink_array_end(s);
         jsonsink_object_end(s);
-        jsonsink_object_end(s);
 }
 
 int
