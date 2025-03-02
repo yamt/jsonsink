@@ -48,39 +48,24 @@ flush(struct jsonsink *s, size_t needed)
 }
 
 static void
-build(struct jsonsink *s)
+build(struct jsonsink *s, unsigned int n, const double *data_double,
+      const uint32_t *data_u32)
 {
         jsonsink_object_start(s);
-        JSONSINK_ADD_LITERAL_KEY(s, "key1");
-        jsonsink_object_start(s);
-        JSONSINK_ADD_LITERAL_KEY(s, "key1");
-        jsonsink_add_serialized_value(s, "100", 3);
-        JSONSINK_ADD_LITERAL_KEY(s, "key2");
-        jsonsink_add_serialized_value(s, "200", 3);
-        JSONSINK_ADD_LITERAL_KEY(s, "array1");
+        JSONSINK_ADD_LITERAL_KEY(s, "array");
         jsonsink_array_start(s);
         uint32_t i;
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < n; i++) {
                 jsonsink_object_start(s);
-                JSONSINK_ADD_LITERAL_KEY(s, "version");
-                JSONSINK_ADD_LITERAL(s, "2");
-                JSONSINK_ADD_LITERAL_KEY(s, "id");
-                jsonsink_add_uint32(s, i);
-                JSONSINK_ADD_LITERAL_KEY(s, "double");
-                jsonsink_add_double(s, -1.2345);
-                JSONSINK_ADD_LITERAL_KEY(s, "int32");
-                jsonsink_add_int32(s, -54321);
-                JSONSINK_ADD_LITERAL_KEY(s, "jsonsink_add_escaped_string");
-                jsonsink_add_escaped_string(s, JSONSINK_LITERAL("foo"));
-                JSONSINK_ADD_LITERAL_KEY(s, "jsonsink_add_serialized_value");
-                jsonsink_add_serialized_value(s,
-                                              JSONSINK_LITERAL_QUOTE("foo"));
-                JSONSINK_ADD_LITERAL_KEY(s, "null");
-                jsonsink_add_null(s);
-                JSONSINK_ADD_LITERAL_KEY(s, "true");
-                jsonsink_add_bool(s, true);
-                JSONSINK_ADD_LITERAL_KEY(s, "false");
-                jsonsink_add_bool(s, false);
+                JSONSINK_ADD_LITERAL_KEY(s, "u32");
+                jsonsink_add_uint32(s, *data_u32++);
+                JSONSINK_ADD_LITERAL_KEY(s, "double_array");
+                jsonsink_array_start(s);
+                jsonsink_add_double(s, *data_double++);
+                jsonsink_add_double(s, *data_double++);
+                jsonsink_add_double(s, *data_double++);
+                jsonsink_add_double(s, *data_double++);
+                jsonsink_array_end(s);
                 jsonsink_object_end(s);
         }
         jsonsink_array_end(s);
@@ -89,7 +74,8 @@ build(struct jsonsink *s)
 }
 
 int
-test_with_static_buffer(void)
+test_with_static_buffer(unsigned int n, const double *data_double,
+                        const uint32_t *data_u32)
 {
         struct sink sink;
         char buf[64];
@@ -98,7 +84,7 @@ test_with_static_buffer(void)
         jsonsink_set_buffer(s, buf, sizeof(buf));
         sink.fp = stdout;
         s->flush = flush;
-        build(s);
+        build(s, n, data_double, data_u32);
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
@@ -109,13 +95,14 @@ test_with_static_buffer(void)
 }
 
 int
-test_with_malloc(void)
+test_with_malloc(unsigned int n, const double *data_double,
+                 const uint32_t *data_u32)
 {
         struct jsonsink s0;
         struct jsonsink *s = &s0;
         int ret = 0;
         jsonsink_init(s);
-        build(s);
+        build(s, n, data_double, data_u32);
         int error = jsonsink_error(s);
         if (error != JSONSINK_ERROR_NO_BUFFER_SPACE) {
                 printf("jsonsink error: %d\n", error);
@@ -129,7 +116,7 @@ test_with_malloc(void)
         }
         jsonsink_init(s);
         jsonsink_set_buffer(s, buf, sz);
-        build(s);
+        build(s, n, data_double, data_u32);
         error = jsonsink_error(s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);
@@ -165,14 +152,15 @@ realloc_flush(struct jsonsink *s, size_t needed)
 }
 
 int
-test_with_realloc(void)
+test_with_realloc(unsigned int n, const double *data_double,
+                  const uint32_t *data_u32)
 {
         struct jsonsink s0;
         struct jsonsink *s = &s0;
         int ret = 0;
         jsonsink_init(s);
         s->flush = realloc_flush;
-        build(s);
+        build(s, n, data_double, data_u32);
         int error = jsonsink_error(s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);

@@ -28,22 +28,52 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "rng.h"
+
 void
-bench(const char *label, int (*fn)(void))
+random_u32(struct rng *rng, unsigned int n, uint32_t *p)
 {
+        unsigned int i;
+        for (i = 0; i < n; i++) {
+                *p++ = rng_rand_u32(rng);
+        }
+}
+
+void
+random_double(struct rng *rng, unsigned int n, double *p)
+{
+        unsigned int i;
+        for (i = 0; i < n; i++) {
+                *p++ = (double)rng_rand_u32(rng);
+        }
+}
+
+void
+bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
+                                   const uint32_t *data_u32))
+{
+        struct rng rng;
         clockid_t cid = CLOCK_MONOTONIC;
         struct timespec start;
         struct timespec end;
         unsigned int i;
-        unsigned int n = 100000;
+        const unsigned int n = 100000;
         int ret;
+
+        const unsigned int ndata = 32;
+        uint32_t data_u32[ndata];
+        double data_double[ndata * 4];
+        rng_init(&rng, 0x12345678);
+        random_u32(&rng, ndata, data_u32);
+        random_double(&rng, ndata * 4, data_double);
+
         ret = clock_gettime(cid, &start);
         if (ret != 0) {
                 fprintf(stderr, "clock_gettime failed\n");
                 exit(1);
         }
         for (i = 0; i < n; i++) {
-                fn();
+                fn(ndata, data_double, data_u32);
         }
         ret = clock_gettime(cid, &end);
         if (ret != 0) {
