@@ -133,6 +133,9 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * want to use something like https://github.com/koendv/FloatToAscii
  * instead of snprintf and then add the result with
  * jsonsink_add_serialized_value.
+ *
+ * jsonsink_add_double doesn't support nan or inf. it's the user's
+ * responsibility to avoid passing them.
  */
 
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
