@@ -26,8 +26,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "jsonsink.h"
+
+static size_t
+do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp)
+{
+        return nitems;
+        // return fwrite(p, sz, nitems, fp);
+}
 
 struct sink {
         struct jsonsink s;
@@ -38,7 +46,7 @@ static bool
 flush(struct jsonsink *s, size_t needed)
 {
         struct sink *sink = (void *)s;
-        size_t nwritten = fwrite(s->buf, 1, s->bufpos, sink->fp);
+        size_t nwritten = do_fwrite(s->buf, 1, s->bufpos, sink->fp);
         if (nwritten != s->bufpos) {
                 return false;
         }
@@ -140,7 +148,7 @@ test_with_malloc(void)
                 ret = 1;
                 goto out;
         }
-        if (fwrite(buf, 1, sz, stdout) != sz) {
+        if (do_fwrite(buf, 1, sz, stdout) != sz) {
                 printf("fwrite error\n");
                 ret = 1;
                 goto out;
@@ -178,7 +186,7 @@ test_with_realloc(void)
                 ret = 1;
                 goto out;
         }
-        if (fwrite(s->buf, 1, s->bufpos, stdout) != s->bufpos) {
+        if (do_fwrite(s->buf, 1, s->bufpos, stdout) != s->bufpos) {
                 printf("fwrite error\n");
                 ret = 1;
                 goto out;
@@ -188,10 +196,41 @@ out:
         return ret;
 }
 
+void
+bench(const char *label, int (*fn)(void))
+{
+        clockid_t cid = CLOCK_MONOTONIC;
+        struct timespec start;
+        struct timespec end;
+        unsigned int i;
+        unsigned int n = 100000;
+        int ret;
+        ret = clock_gettime(cid, &start);
+        if (ret != 0) {
+                fprintf(stderr, "clock_gettime failed\n");
+                exit(1);
+        }
+        for (i = 0; i < n; i++) {
+                fn();
+        }
+        ret = clock_gettime(cid, &end);
+        if (ret != 0) {
+                fprintf(stderr, "clock_gettime failed\n");
+                exit(1);
+        }
+        double start_sec = start.tv_sec * 1.0 + start.tv_nsec / 1000000000.0;
+        double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
+        double cps = n / (end_sec - start_sec);
+        printf("%s: %g\n", label, cps);
+}
+
 int
 main(int argc, char **argv)
 {
+        bench("test_with_static_buffer", test_with_static_buffer);
+        bench("test_with_malloc", test_with_malloc);
+        bench("test_with_realloc", test_with_realloc);
         // test_with_static_buffer();
         // test_with_malloc();
-        test_with_realloc();
+        // test_with_realloc();
 }
