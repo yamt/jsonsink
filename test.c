@@ -33,8 +33,8 @@
 static size_t
 do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp)
 {
-        return nitems;
-        // return fwrite(p, sz, nitems, fp);
+        // return nitems;
+        return fwrite(p, sz, nitems, fp);
 }
 
 struct sink {
@@ -227,10 +227,12 @@ bench(const char *label, int (*fn)(void))
 int
 main(int argc, char **argv)
 {
+#if 0
         bench("test_with_static_buffer", test_with_static_buffer);
         bench("test_with_malloc", test_with_malloc);
         bench("test_with_realloc", test_with_realloc);
-        // test_with_static_buffer();
+#endif
+        test_with_static_buffer();
         // test_with_malloc();
         // test_with_realloc();
 }
