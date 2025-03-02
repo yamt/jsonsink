@@ -112,6 +112,7 @@ test_with_malloc(void)
 {
         struct jsonsink s0;
         struct jsonsink *s = &s0;
+        int ret = 0;
         jsonsink_init(s);
         build(s);
         int error = jsonsink_error(s);
@@ -131,18 +132,22 @@ test_with_malloc(void)
         error = jsonsink_error(s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);
-                return 1;
+                ret = 1;
+                goto out;
         }
         if (sz != jsonsink_size(s)) {
                 printf("unexpected size: %zu != %zu\n", sz, jsonsink_size(s));
-                return 1;
+                ret = 1;
+                goto out;
         }
         if (fwrite(buf, 1, sz, stdout) != sz) {
                 printf("fwrite error\n");
-                return 1;
+                ret = 1;
+                goto out;
         }
+out:
         free(buf);
-        return 0;
+        return ret;
 }
 
 static bool
@@ -163,20 +168,24 @@ test_with_realloc(void)
 {
         struct jsonsink s0;
         struct jsonsink *s = &s0;
+        int ret = 0;
         jsonsink_init(s);
         s->flush = realloc_flush;
         build(s);
         int error = jsonsink_error(s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);
-                return 1;
+                ret = 1;
+                goto out;
         }
         if (fwrite(s->buf, 1, s->bufpos, stdout) != s->bufpos) {
                 printf("fwrite error\n");
-                return 1;
+                ret = 1;
+                goto out;
         }
+out:
         free(s->buf);
-        return 0;
+        return ret;
 }
 
 int
