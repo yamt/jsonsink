@@ -42,10 +42,10 @@ struct jsonsink {
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
 void jsonsink_clear(struct jsonsink *s);
-int jsonsink_error(struct jsonsink *s);
+int jsonsink_error(const struct jsonsink *s);
 void jsonsink_set_error(struct jsonsink *s, int error);
-void *jsonsink_pointer(struct jsonsink *s);
-size_t jsonsink_size(struct jsonsink *s);
+void *jsonsink_pointer(const struct jsonsink *s);
+size_t jsonsink_size(const struct jsonsink *s);
 
 void jsonsink_object_start(struct jsonsink *s);
 void jsonsink_object_end(struct jsonsink *s);

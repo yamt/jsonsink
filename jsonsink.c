@@ -81,7 +81,7 @@ jsonsink_clear(struct jsonsink *s)
 }
 
 int
-jsonsink_error(struct jsonsink *s)
+jsonsink_error(const struct jsonsink *s)
 {
         return s->error;
 }
@@ -93,13 +93,13 @@ jsonsink_set_error(struct jsonsink *s, int error)
 }
 
 void *
-jsonsink_pointer(struct jsonsink *s)
+jsonsink_pointer(const struct jsonsink *s)
 {
         return s->buf;
 }
 
 size_t
-jsonsink_size(struct jsonsink *s)
+jsonsink_size(const struct jsonsink *s)
 {
         return s->bufpos;
 }
