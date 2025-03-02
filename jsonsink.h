@@ -24,8 +24,15 @@
  * SUCH DAMAGE.
  */
 
+#if !defined(_JSONSINK_H)
+#define _JSONSINK_H
+
 #include <stdbool.h>
 #include <stddef.h>
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 #define JSONSINK_OK 0
 #define JSONSINK_ERROR_BUFFEROVERFLOW 1
@@ -85,3 +92,9 @@ void jsonsink_add_double(struct jsonsink *s, double v);
         jsonsink_add_serialized_value(s, JSONSINK_LITERAL(l))
 #define JSONSINK_ADD_LITERAL_STRING(s, l)                                     \
         jsonsink_add_serialized_value(s, JSONSINK_LITERAL_QUOTE(l))
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* !defined(_JSONSINK_H) */
