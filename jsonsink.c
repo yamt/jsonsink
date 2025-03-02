@@ -40,7 +40,12 @@ write_serialized(struct jsonsink *s, const void *value, size_t valuelen)
 {
         size_t newbufpos = s->bufpos + valuelen;
         if (newbufpos > s->buflen) {
-                if (!jsonsink_flush(s, valuelen)) {
+                if (s->flush != NULL) {
+                        if (!jsonsink_flush(s, valuelen)) {
+                                return;
+                        }
+                } else {
+                        s->bufpos = newbufpos;
                         return;
                 }
                 newbufpos = s->bufpos + valuelen;
@@ -91,7 +96,13 @@ jsonsink_flush(struct jsonsink *s, size_t needed)
 int
 jsonsink_error(const struct jsonsink *s)
 {
-        return s->error;
+        if (s->error != JSONSINK_OK) {
+                return s->error;
+        }
+        if (s->bufpos > s->buflen) {
+                return JSONSINK_ERROR_NO_BUFFER_SPACE;
+        }
+        return JSONSINK_OK;
 }
 
 void

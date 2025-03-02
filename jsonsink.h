@@ -35,8 +35,9 @@ extern "C" {
 #endif
 
 #define JSONSINK_OK 0
-#define JSONSINK_ERROR_FLUSH_FAILED 1
-#define JSONSINK_ERROR_SERIALIZATION 2
+#define JSONSINK_ERROR_NO_BUFFER_SPACE 1
+#define JSONSINK_ERROR_FLUSH_FAILED 2
+#define JSONSINK_ERROR_SERIALIZATION 3
 
 struct jsonsink {
         void *buf;     /* buffer to write */

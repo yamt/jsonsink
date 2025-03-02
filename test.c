@@ -88,7 +88,7 @@ build(struct jsonsink *s)
 }
 
 int
-main(int argc, char **argv)
+test_with_static_buffer(void)
 {
         struct sink sink;
         char buf[64];
@@ -104,4 +104,47 @@ main(int argc, char **argv)
                 printf("jsonsink error: %d\n", error);
                 return 1;
         }
+        return 0;
+}
+
+int
+test_with_malloc(void)
+{
+        struct jsonsink s0;
+        struct jsonsink *s = &s0;
+        jsonsink_init(s);
+        build(s);
+        int error = jsonsink_error(s);
+        if (error != JSONSINK_ERROR_NO_BUFFER_SPACE) {
+                printf("jsonsink error: %d\n", error);
+                return 1;
+        }
+        size_t sz = jsonsink_size(s);
+        void *buf = malloc(sz);
+        if (buf == NULL) {
+                printf("malloc failure\n");
+                return 1;
+        }
+        jsonsink_init(s);
+        jsonsink_set_buffer(s, buf, sz);
+        build(s);
+        error = jsonsink_error(s);
+        if (error != 0) {
+                printf("jsonsink error: %d\n", error);
+                return 1;
+        }
+        if (sz != jsonsink_size(s)) {
+                printf("unexpected size: %zu != %zu\n", sz, jsonsink_size(s));
+                return 1;
+        }
+        fwrite(buf, sz, 1, stdout);
+        free(buf);
+        return 0;
+}
+
+int
+main(int argc, char **argv)
+{
+        test_with_static_buffer();
+        test_with_malloc();
 }
