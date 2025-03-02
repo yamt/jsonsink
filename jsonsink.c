@@ -161,3 +161,19 @@ jsonsink_array_end(struct jsonsink *s)
         write_char(s, ']');
         s->need_comma = true;
 }
+
+void
+jsonsink_add_null(struct jsonsink *s)
+{
+        jsonsink_add_serialized_value(s, JSONSINK_LITERAL("null"));
+}
+
+void
+jsonsink_add_bool(struct jsonsink *s, bool v)
+{
+        if (v) {
+                jsonsink_add_serialized_value(s, JSONSINK_LITERAL("true"));
+        } else {
+                jsonsink_add_serialized_value(s, JSONSINK_LITERAL("false"));
+        }
+}

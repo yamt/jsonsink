@@ -72,6 +72,13 @@ void jsonsink_array_start(struct jsonsink *s);
 void jsonsink_array_end(struct jsonsink *s);
 
 /*
+ * the api to add null and bool values.
+ */
+
+void jsonsink_add_null(struct jsonsink *s);
+void jsonsink_add_bool(struct jsonsink *s, bool v);
+
+/*
  * the api to deal with serialized key/value.
  *
  * these functions add a value (or key) which is already serialized.
