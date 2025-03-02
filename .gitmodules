@@ -1,0 +1,3 @@
+[submodule "bench/rapidjson"]
+	path = bench/deps/rapidjson
+	url = https://github.com/Tencent/rapidjson/
