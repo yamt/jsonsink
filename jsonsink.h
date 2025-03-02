@@ -59,3 +59,9 @@ void jsonsink_array_start(struct jsonsink *s);
 void jsonsink_array_end(struct jsonsink *s);
 
 void jsonsink_add_value_uint32(struct jsonsink *s, uint32_t v);
+
+#define JSONSINK_LITERAL_QUOTE(cstr) "\"" cstr "\"", sizeof(cstr) + 1
+#define JSONSINK_LITERAL(cstr) cstr, sizeof(cstr) - 1
+#define JSONSINK_ADD_LITERAL_KEY(s, l) jsonsink_add_serialized_key(s, JSONSINK_LITERAL_QUOTE(l))
+#define JSONSINK_ADD_LITERAL(s, l) jsonsink_add_serialized_value(s, JSONSINK_LITERAL(l))
+#define JSONSINK_ADD_LITERAL_STRING(s, l) jsonsink_add_serialized_value(s, JSONSINK_LITERAL_QUOTE(l))
