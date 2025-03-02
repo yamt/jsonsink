@@ -45,24 +45,30 @@ main(int argc, char **argv)
         jsonsink_add_serialized_value(&s, "200", 3);
         JSONSINK_ADD_LITERAL_KEY(&s, "array1");
         jsonsink_array_start(&s);
-        jsonsink_array_start(&s);
-        JSONSINK_ADD_LITERAL(&s, "1");
-        JSONSINK_ADD_LITERAL(&s, "1");
-        JSONSINK_ADD_LITERAL(&s, "1");
-        jsonsink_array_end(&s);
-        jsonsink_array_start(&s);
-        JSONSINK_ADD_LITERAL(&s, "2");
-        JSONSINK_ADD_LITERAL(&s, "2");
-        JSONSINK_ADD_LITERAL(&s, "2");
-        jsonsink_add_double(&s, -1.2345);
-        jsonsink_add_uint32(&s, 54321);
-        jsonsink_add_int32(&s, -54321);
-        jsonsink_add_escaped_string(&s, JSONSINK_LITERAL("foo"));
-        jsonsink_add_serialized_value(&s, JSONSINK_LITERAL_QUOTE("foo"));
-        jsonsink_add_null(&s);
-        jsonsink_add_bool(&s, true);
-        jsonsink_add_bool(&s, false);
-        jsonsink_array_end(&s);
+        uint32_t i;
+        for (i = 0; i < 4; i++) {
+                jsonsink_object_start(&s);
+                JSONSINK_ADD_LITERAL_KEY(&s, "version");
+                JSONSINK_ADD_LITERAL(&s, "2");
+                JSONSINK_ADD_LITERAL_KEY(&s, "id");
+                jsonsink_add_uint32(&s, i);
+                JSONSINK_ADD_LITERAL_KEY(&s, "double");
+                jsonsink_add_double(&s, -1.2345);
+                JSONSINK_ADD_LITERAL_KEY(&s, "int32");
+                jsonsink_add_int32(&s, -54321);
+                JSONSINK_ADD_LITERAL_KEY(&s, "jsonsink_add_escaped_string");
+                jsonsink_add_escaped_string(&s, JSONSINK_LITERAL("foo"));
+                JSONSINK_ADD_LITERAL_KEY(&s, "jsonsink_add_serialized_value");
+                jsonsink_add_serialized_value(&s,
+                                              JSONSINK_LITERAL_QUOTE("foo"));
+                JSONSINK_ADD_LITERAL_KEY(&s, "null");
+                jsonsink_add_null(&s);
+                JSONSINK_ADD_LITERAL_KEY(&s, "true");
+                jsonsink_add_bool(&s, true);
+                JSONSINK_ADD_LITERAL_KEY(&s, "false");
+                jsonsink_add_bool(&s, false);
+                jsonsink_object_end(&s);
+        }
         jsonsink_array_end(&s);
         jsonsink_object_end(&s);
         jsonsink_object_end(&s);
