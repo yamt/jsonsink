@@ -28,7 +28,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "bench.h"
 #include "rng.h"
+
+bool test_run;
 
 void
 random_u32(struct rng *rng, unsigned int n, uint32_t *p)
@@ -57,9 +60,12 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         struct timespec start;
         struct timespec end;
         unsigned int i;
-        const unsigned int n = 100000;
+        unsigned int n = 100000;
         int ret;
 
+        if (test_run) {
+                n = 1;
+        }
         const unsigned int ndata = 32;
         uint32_t data_u32[ndata];
         double data_double[ndata * 4];
@@ -83,12 +89,16 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         double start_sec = start.tv_sec * 1.0 + start.tv_nsec / 1000000000.0;
         double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
         double cps = n / (end_sec - start_sec);
-        printf("%s: %g\n", label, cps);
+        if (!test_run) {
+                printf("%s: %g\n", label, cps);
+        }
 }
 
 size_t
 do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp)
 {
+        if (test_run) {
+                return fwrite(p, sz, nitems, fp);
+        }
         return nitems;
-        // return fwrite(p, sz, nitems, fp);
 }

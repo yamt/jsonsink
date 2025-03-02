@@ -6,4 +6,4 @@ void bench(const char *label,
                      const uint32_t *data_u32));
 size_t do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp);
 
-extern bool enable_output;
+extern bool test_run;
