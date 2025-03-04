@@ -37,7 +37,7 @@ jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
         const size_t maxlen = sizeof("4294967295");
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
-        int ret = jnum_htoa(v, dest != NULL ? dest : tmp);
+        int ret = jnum_ltoa(v, dest != NULL ? dest : tmp);
         JSONSINK_ASSERT(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
