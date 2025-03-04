@@ -24,7 +24,6 @@
  * SUCH DAMAGE.
  */
 
-#include <inttypes.h>
 #include <string.h>
 
 #include "jsonsink.h"

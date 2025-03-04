@@ -28,6 +28,7 @@
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
 #include <math.h>
 #endif
+#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 
