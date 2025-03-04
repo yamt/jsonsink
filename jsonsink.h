@@ -96,6 +96,10 @@ struct jsonsink {
  * leave the choice to users.
  **************************************************************************/
 
+/*
+ * initialization
+ */
+
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
 
@@ -132,7 +136,8 @@ size_t jsonsink_size(const struct jsonsink *s);
 /*
  * the api to create JSON object and array.
  *
- * the library doesn't validate if start/end are balanced well.
+ * by default, the library doesn't validate if start/end are balanced well.
+ * (unless JSONSINK_ENABLE_ASSERTIONS is enabled)
  * it's the user's responsibily to call them in a sane way.
  */
 
