@@ -9,6 +9,7 @@ df = df[::-1]
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
+ax1.tick_params(axis='x', labelrotation=90)
 
 df.plot.barh(
     x=0,
