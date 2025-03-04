@@ -1,0 +1,10 @@
+jsonsink+snprintf (static buffer), 14634.8
+jsonsink+snprintf (malloc), 7500.33
+jsonsink+snprintf (realloc), 14236.5
+jsonsink+jnum (static buffer), 173893
+jsonsink+jnum (malloc), 98908.4
+jsonsink+jnum (realloc), 151363
+ljson sax, 126966
+rapidjson writer, 69874.2
+parson, 3793.54
+flatbuffers, 352156
