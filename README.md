@@ -9,7 +9,7 @@ A small and fast JSON producer written in C.
 * Correctness
 * Clean code
 * Small footprint
-  * Be able to produce json larger than available memory
+  * Be able to produce JSON larger than available memory
 * Portability
 
 ## Non-goals
@@ -23,7 +23,8 @@ A small and fast JSON producer written in C.
 
 ![Graph](./bench/result.png)
 
-* It measures the speed to generate JSON like [this](bench/example.json).
+* It measures the speed to generate JSON objects, an equivalent of
+  [this](bench/example.json).
 
 * Larger is better.
 
@@ -38,8 +39,9 @@ A small and fast JSON producer written in C.
 
 ### Notes
 
-* It ended up with benchmarking the conversion from binary numbers to
-  strings. (itoa/dtoa)
+* As the structural aspects of JSON (arrays and objects) are trivial,
+  it seems that this benchmark ended up with measuring the performance
+  of the conversion from binary numbers to strings. (itoa/dtoa)
 
   * `jsonsink+snprintf`, `parson`, and `snprintf` use libc snprintf for
   the conversion.
