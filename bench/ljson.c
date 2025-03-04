@@ -74,5 +74,5 @@ test_ljson(unsigned int n, const double *data_double, const uint32_t *data_u32)
 void
 run_bench(void)
 {
-        bench("ljson", test_ljson);
+        bench("ljson sax", test_ljson);
 }
