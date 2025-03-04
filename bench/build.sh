@@ -1,6 +1,7 @@
 #! /bin/sh
 
 #DBG="-D JSONSINK_ENABLE_ASSERTIONS"
+DBG="-D NDEBUG"
 CC="cc -g -O2 -flto=full ${DBG}"
 CXX="c++ -g -O2 -flto=full ${DBG}"
 
