@@ -116,7 +116,7 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
         double cps = n / (end_sec - start_sec);
         if (!test_run) {
-                printf("%s: %g\n", label, cps);
+                printf("%s, %g\n", label, cps);
         }
 }
 
