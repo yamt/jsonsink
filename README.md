@@ -19,7 +19,7 @@ A small and fast JSON producer written in C.
 * Validator
 * DOM 
 
-## benchmark
+## Benchmark
 
 ![Graph](./bench/result.png)
 
@@ -57,3 +57,17 @@ A small and fast JSON producer written in C.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
   the necessary buffer size.
+
+### Benchmark code
+
+* [jsonsink](./bench/jsonsink.c)
+
+* [snprintf](./bench/snprintf.c)
+
+* [ljson](./bench/ljson.c)
+
+* [rapidjson](./bench/rapidjson.cxx)
+
+* [parson](./bench/parson.c)
+
+* [flatbuffers](./bench/flatbuffers.cxx)
