@@ -157,19 +157,25 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
 /*
  * serialize-and-add style functions.
  *
- * the current implementations of these functions are just
- * snprintf + jsonsink_add_serialized_value.
+ * the default implementations of these functions found in
+ * jsonsink_serialization.c just uses snprintf to convert values
+ * to strings.
  *
  * if you care performance of the string conversion, you might
- * want to use an optimized implemontation instead of snprintf and then
- * add the result with jsonsink_add_serialized_value.
+ * want to use an optimized implemontation instead of snprintf.
  * cf.
  * - https://github.com/miloyip/dtoa-benchmark
  * - https://github.com/miloyip/itoa-benchmark
  *
+ * jsonsink_serialization_jnum.c has an implementation which uses
+ * itoa/dtoa functions from LJSON jnum.c, which is usually far faster
+ * than snprintf.
+ *
  * jsonsink_add_double doesn't support nan or inf. it's the user's
  * responsibility to avoid passing them. note that JSON itself doesn't
  * have nan or inf.
+ *
+ * [LJSON]: https://github.com/lengjingzju/json
  */
 
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
