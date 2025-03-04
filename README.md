@@ -49,6 +49,13 @@ A small and fast JSON producer written in C.
 
   * `flatbuffers` is very fast because it doesn't involve the conversions.
 
+  * In case you are interested in this area, there are dedicated
+    benchmarks out there.
+
+    * https://github.com/miloyip/itoa-benchmark
+    * https://github.com/miloyip/dtoa-benchmark
+    * https://github.com/abolz/Drachennest
+
 * `jsonsink (malloc)` is expected to be about twice slower than
   `jsonsink (static buffer)` because it calculates the necessay buffer size 
   with a dry-run.
