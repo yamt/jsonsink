@@ -71,6 +71,12 @@ struct jsonsink {
 
 /**************************************************************************
  * core api
+ *
+ * note: the idea behind this api is to avoid hardcoding expensive
+ * serialization logic in the core part of the library. some users might
+ * prefer the slow but small implementation. (eg. system snprintf)
+ * others might prefer highly-optimized implementations. it's better to
+ * leave the choice to users.
  **************************************************************************/
 
 void jsonsink_init(struct jsonsink *s);
