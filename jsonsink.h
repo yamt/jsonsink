@@ -104,6 +104,8 @@ void jsonsink_add_bool(struct jsonsink *s, bool v);
 
 /*
  * reserve/commit api to avoid extra memcpy.
+ *
+ * see jsonsink_serialization.c for usage examples.
  */
 
 void *jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len);
@@ -121,6 +123,11 @@ void jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len);
  * the library blindly uses the given serialized value as it is
  * without any validations. it's the user's responsibility to pass
  * a sane value.
+ *
+ * jsonsink_add_serialized_value is basically an equivalent of
+ *   jsonsink_add_serialized_value_reserve
+ *   + memcpy
+ *   + jsonsink_add_serialized_value_commit.
  *
  * jsonsink_add_escaped_string only quotes the given string.
  * it's the user's responsibily to pass the string which doesn't
