@@ -183,14 +183,12 @@ out:
         return ret;
 }
 
-int
-main(int argc, char **argv)
+void
+run_bench(void)
 {
-        test_run = true;
         bench("test_with_static_buffer", test_with_static_buffer);
-        printf("\n");
-        test_run = false;
-        bench("test_with_static_buffer", test_with_static_buffer);
-        bench("test_with_malloc", test_with_malloc);
-        bench("test_with_realloc", test_with_realloc);
+        if (!test_run) {
+                bench("test_with_malloc", test_with_malloc);
+                bench("test_with_realloc", test_with_realloc);
+        }
 }

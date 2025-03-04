@@ -67,12 +67,8 @@ test_parson(unsigned int n, const double *data_double,
         return ret;
 }
 
-int
-main(int argc, char **argv)
+void
+run_bench(void)
 {
-        test_run = true;
-        bench("test_parson", test_parson);
-        printf("\n");
-        test_run = false;
         bench("test_parson", test_parson);
 }

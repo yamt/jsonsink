@@ -27,6 +27,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "bench.h"
@@ -126,4 +127,16 @@ do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp)
                 return fwrite(p, sz, nitems, fp);
         }
         return nitems;
+}
+
+int
+main(int argc, char **argv)
+{
+        if (argc == 2 && !strcmp(argv[1], "--test")) {
+                test_run = true;
+                run_bench();
+                test_run = false;
+        } else {
+                run_bench();
+        }
 }

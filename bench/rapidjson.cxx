@@ -66,12 +66,8 @@ test_rapidjson_writer(unsigned int n, const double *data_double,
         return 0;
 }
 
-int
-main(int argc, char **argv)
+void
+run_bench(void)
 {
-        test_run = true;
-        bench("test_rapidjson_writer", test_rapidjson_writer);
-        printf("\n");
-        test_run = false;
         bench("test_rapidjson_writer", test_rapidjson_writer);
 }
