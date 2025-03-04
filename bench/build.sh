@@ -2,6 +2,7 @@
 
 JSONSINK=..
 cc -g -O2 -flto=full \
+-D JSONSINK_ENABLE_ASSERTIONS \
 -o jsonsink \
 -I ${JSONSINK} \
 bench.c \
