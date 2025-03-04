@@ -24,6 +24,7 @@
  * SUCH DAMAGE.
  */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -47,7 +48,31 @@ random_double(struct rng *rng, unsigned int n, double *p)
 {
         unsigned int i;
         for (i = 0; i < n; i++) {
+                /*
+                 * XXX maybe it's better to use a bit more realisitc
+                 * distribution.
+                 */
+#if defined(BENCH_DOUBLE_BITWISE)
+                double d;
+                do {
+                        union {
+                                double d;
+                                uint64_t u;
+                        } u;
+                        u.u = ((uint64_t)rng_rand_u32(rng) << 32) |
+                              rng_rand_u32(rng);
+                        d = u.d;
+                } while (isnan(d) || isinf(d));
+                *p++ = d;
+#elif defined(BENCH_DOUBLE_INTEGER)
                 *p++ = (double)rng_rand_u32(rng);
+#else
+                double d;
+                do {
+                        d = (double)(int32_t)rng_rand_u32(rng) / 100000;
+                } while (isnan(d) || isinf(d));
+                *p++ = d;
+#endif
         }
 }
 
