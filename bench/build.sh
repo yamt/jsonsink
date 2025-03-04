@@ -27,6 +27,16 @@ ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization_jnum.c \
 ${LJSON}/jnum.c
 
+${CC} \
+-D JSON_SAX_APIS_SUPPORT \
+-o ljson \
+-I ${LJSON} \
+bench.c \
+rng.c \
+ljson.c \
+${LJSON}/jnum.c \
+${LJSON}/json.c
+
 RAPIDJSON=deps/rapidjson/include
 ${CXX} \
 -o rapidjson \
