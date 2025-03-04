@@ -11,6 +11,19 @@ jsonsink.c \
 ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization.c
 
+LJSON=deps/ljson
+cc -g -O2 -flto=full \
+-D JSONSINK_ENABLE_ASSERTIONS \
+-o jsonsink-jnum \
+-I ${JSONSINK} \
+-I ${LJSON} \
+bench.c \
+rng.c \
+jsonsink.c \
+${JSONSINK}/jsonsink.c \
+${JSONSINK}/jsonsink_serialization_jnum.c \
+${LJSON}/jnum.c
+
 RAPIDJSON=deps/rapidjson/include
 c++ -g -O2 -flto=full \
 -o rapidjson \
