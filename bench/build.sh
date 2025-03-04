@@ -27,6 +27,12 @@ ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization_jnum.c \
 ${LJSON}/jnum.c
 
+${CC} \
+-o snprintf \
+bench.c \
+rng.c \
+snprintf.c
+
 FLATBUFFERS=/usr/local/opt/flatbuffers
 ${CXX} \
 -std=c++17 \
