@@ -69,5 +69,5 @@ test_rapidjson_writer(unsigned int n, const double *data_double,
 void
 run_bench(void)
 {
-        bench("test_rapidjson_writer", test_rapidjson_writer);
+        bench("rapidjson", test_rapidjson_writer);
 }

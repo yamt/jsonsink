@@ -16,6 +16,7 @@ ${JSONSINK}/jsonsink_serialization.c
 
 LJSON=deps/ljson
 ${CC} \
+-D JSONSINK_BENCH_JNUM \
 -o jsonsink-jnum \
 -I ${JSONSINK} \
 -I ${LJSON} \

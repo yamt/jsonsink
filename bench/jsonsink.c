@@ -183,12 +183,18 @@ out:
         return ret;
 }
 
+#if defined(JSONSINK_BENCH_JNUM)
+#define NAME "jsonsink+jnum"
+#else
+#define NAME "jsonsink"
+#endif
+
 void
 run_bench(void)
 {
-        bench("test_with_static_buffer", test_with_static_buffer);
+        bench(NAME " (static buffer)", test_with_static_buffer);
         if (!test_run) {
-                bench("test_with_malloc", test_with_malloc);
-                bench("test_with_realloc", test_with_realloc);
+                bench(NAME " (malloc)", test_with_malloc);
+                bench(NAME " (realloc)", test_with_realloc);
         }
 }
