@@ -168,7 +168,7 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * jsonsink_serialization.c just uses snprintf to convert values
  * to strings.
  *
- * if you care performance of the string conversion, you might
+ * if the performance of the string conversion is important, you might
  * want to use an optimized implemontation instead of snprintf.
  * cf.
  * - https://github.com/miloyip/dtoa-benchmark
@@ -177,6 +177,12 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * jsonsink_serialization_jnum.c has an implementation which uses
  * itoa/dtoa functions from LJSON jnum.c, which is usually far faster
  * than snprintf.
+ *
+ * the advantage of the default snprintf implementation is the code size.
+ * after all, snprintf is likely already used by the other part of the
+ * system.
+ * on the other hand, many of highly-optimized dtoa/itoa implementations
+ * involve lookup tables, which might be a burden for very small systems.
  *
  * jsonsink_add_double doesn't support nan or inf. it's the user's
  * responsibility to avoid passing them. note that JSON itself doesn't
