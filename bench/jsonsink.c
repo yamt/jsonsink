@@ -186,7 +186,7 @@ out:
 #if defined(JSONSINK_BENCH_JNUM)
 #define NAME "jsonsink+jnum"
 #else
-#define NAME "jsonsink"
+#define NAME "jsonsink+snprintf"
 #endif
 
 void
