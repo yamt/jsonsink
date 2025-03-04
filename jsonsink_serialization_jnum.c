@@ -24,6 +24,19 @@
  * SUCH DAMAGE.
  */
 
+/*
+ * this file is an example to use alternative itoa/dtoa implementations,
+ * namely LJSON jnum.c.
+ *
+ * note: LJSON jnum.c functions write out the terminating NUL to the buffer.
+ * while we don't really need the NUL, we should reserve the extra byte for
+ * it with jsonsink_add_serialized_value_reserve to avoid the overrun.
+ * on the other hand, they return the number of bytes NOT including the
+ * terminating NUL, which is suitable for jsonsink_add_serialized_value_commit.
+ *
+ * [LJSON]: https://github.com/lengjingzju/json
+ */
+
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
 #include <math.h>
 #endif
