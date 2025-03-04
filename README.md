@@ -44,14 +44,16 @@ A small and fast JSON producer written in C.
   the conversion.
   `jsonsink+jnum`, `rapidjson`, and `ljson` use more performant implementations
   of the conversion.
-  `flatbuffers` is fast mainly because it doesn't involve the conversions.
+  `flatbuffers` is very fast because it doesn't involve the conversions.
 
 * `jsonsink (malloc)` is expected to be about twice slower than
   `jsonsink (static buffer)` because it calculates the necessay buffer size 
   with a dry-run.
 
-* `flatbuffers` is not a fair comparison because it isn't a JSON producer.
-  i included it just as a base line.
+* `flatbuffers` is not a fair comparison because it doesn't produce JSON.
+  I included it just as a base line.
+  The serialized object contains the equivalent of the JSON ones.
+  (See its [schema](./bench/test.fbs).)
 
 * `parson` is not a fair comparison because it uses a DOM-based api.
 
