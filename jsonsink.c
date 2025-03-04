@@ -34,14 +34,36 @@ set_error(struct jsonsink *s, int error)
         s->error = error;
 }
 
+static void *
+reserve_buffer(struct jsonsink *s, size_t len)
+{
+        size_t newbufpos = s->bufpos + len;
+        if (newbufpos > s->buflen) {
+                if (s->flush != NULL) {
+                        if (!jsonsink_flush(s, len)) {
+                                return NULL;
+                        }
+                } else {
+                        return NULL;
+                }
+        }
+        return (char *)s->buf + s->bufpos;
+}
+
+static void
+commit_buffer(struct jsonsink *s, size_t len)
+{
+        s->bufpos += len;
+}
+
 static void
 write_serialized(struct jsonsink *s, const void *value, size_t len)
 {
-        void *dest = jsonsink_reserve_buffer(s, len);
+        void *dest = reserve_buffer(s, len);
         if (dest != NULL) {
                 memcpy(dest, value, len);
         }
-        jsonsink_commit_buffer(s, len);
+        commit_buffer(s, len);
 }
 
 static void
@@ -186,40 +208,18 @@ jsonsink_add_bool(struct jsonsink *s, bool v)
 }
 
 void *
-jsonsink_reserve_buffer(struct jsonsink *s, size_t len)
-{
-        size_t newbufpos = s->bufpos + len;
-        if (newbufpos > s->buflen) {
-                if (s->flush != NULL) {
-                        if (!jsonsink_flush(s, len)) {
-                                return NULL;
-                        }
-                } else {
-                        return NULL;
-                }
-        }
-        return (char *)s->buf + s->bufpos;
-}
-
-void
-jsonsink_commit_buffer(struct jsonsink *s, size_t len)
-{
-        s->bufpos += len;
-}
-
-void *
 jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len)
 {
         JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
                         s->has_key);
         may_write_comma(s);
-        return jsonsink_reserve_buffer(s, len);
+        return reserve_buffer(s, len);
 }
 
 void
 jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
 {
-        jsonsink_commit_buffer(s, len);
+        commit_buffer(s, len);
         s->need_comma = true;
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
         s->has_key = false;

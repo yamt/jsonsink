@@ -105,8 +105,7 @@ void jsonsink_add_bool(struct jsonsink *s, bool v);
 /*
  * reserve/commit api to avoid extra memcpy.
  */
-void *jsonsink_reserve_buffer(struct jsonsink *s, size_t len);
-void jsonsink_commit_buffer(struct jsonsink *s, size_t len);
+
 void *jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len);
 void jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len);
 
