@@ -57,6 +57,15 @@ struct jsonsink {
         bool (*flush)(struct jsonsink *s, size_t needed);
         int error;
         bool need_comma;
+
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        unsigned int level;
+        bool has_key;
+#if !defined(JSONSINK_MAX_NEST)
+#define JSONSINK_MAX_NEST 32
+#endif
+        bool is_obj[JSONSINK_MAX_NEST];
+#endif /* defined(JSONSINK_ENABLE_ASSERTIONS) */
 };
 
 /**************************************************************************
@@ -166,6 +175,37 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
 void jsonsink_add_uint32(struct jsonsink *s, uint32_t v);
 void jsonsink_add_int32(struct jsonsink *s, int32_t v);
 void jsonsink_add_double(struct jsonsink *s, double v);
+
+/**************************************************************************
+ * debug stuff
+ **************************************************************************/
+
+/*
+ * JSONSINK_ENABLE_ASSERTIONS enables extra sanity checks in the library.
+ * the main purpose is to detect typical api usage errors like
+ * jsonsink_object_start/jsonsink_object_end mismatches.
+ * some of these checks involve extra memory overhead. (see
+ * struct jsonsink)
+ *
+ * jsonsink_check is expected to be called at the end of a json producer
+ * logic to ensure the completeness of the json object. it would detect
+ * errors like missing the last jsonsink_object_end call.
+ */
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+#include <stdio.h>
+#define JSONSINK_ASSERT(cond)                                                 \
+        do {                                                                  \
+                if (!(cond)) {                                                \
+                        fprintf(stderr, "assertion (%s) failed at %s:%d\n",   \
+                                #cond, __FILE__, __LINE__);                   \
+                        __builtin_trap();                                     \
+                }                                                             \
+        } while (0)
+void jsonsink_check(const struct jsonsink *s);
+#else /* defined(JSONSINK_ENABLE_ASSERTIONS) */
+#define JSONSINK_ASSERT(cond)
+#define jsonsink_check(s)
+#endif /* defined(JSONSINK_ENABLE_ASSERTIONS) */
 
 #if defined(__cplusplus)
 }

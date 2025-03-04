@@ -80,6 +80,7 @@ jsonsink_flush(struct jsonsink *s, size_t needed)
                 set_error(s, JSONSINK_ERROR_FLUSH_FAILED);
                 return false;
         }
+        JSONSINK_ASSERT(s->bufpos + needed <= s->buflen);
         return true;
 }
 
@@ -116,6 +117,12 @@ jsonsink_size(const struct jsonsink *s)
 void
 jsonsink_object_start(struct jsonsink *s)
 {
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->is_obj[s->level] = true;
+        JSONSINK_ASSERT(++s->level > 0);
+        JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
+        s->has_key = false;
+#endif
         may_write_comma(s);
         write_char(s, '{');
         s->need_comma = false;
@@ -124,6 +131,9 @@ jsonsink_object_start(struct jsonsink *s)
 void
 jsonsink_object_end(struct jsonsink *s)
 {
+        JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
+        JSONSINK_ASSERT(s->level-- > 0);
+        JSONSINK_ASSERT(s->is_obj[s->level]);
         write_char(s, '}');
         s->need_comma = true;
 }
@@ -131,6 +141,12 @@ jsonsink_object_end(struct jsonsink *s)
 void
 jsonsink_array_start(struct jsonsink *s)
 {
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->is_obj[s->level] = false;
+        JSONSINK_ASSERT(++s->level > 0);
+        JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
+        s->has_key = false;
+#endif
         may_write_comma(s);
         write_char(s, '[');
         s->need_comma = false;
@@ -139,9 +155,20 @@ jsonsink_array_start(struct jsonsink *s)
 void
 jsonsink_array_end(struct jsonsink *s)
 {
+        JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
+        JSONSINK_ASSERT(s->level-- > 0);
+        JSONSINK_ASSERT(!s->is_obj[s->level]);
         write_char(s, ']');
         s->need_comma = true;
 }
+
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+void
+jsonsink_check(const struct jsonsink *s)
+{
+        JSONSINK_ASSERT(s->level == 0);
+}
+#endif
 
 void
 jsonsink_add_null(struct jsonsink *s)
@@ -184,6 +211,8 @@ jsonsink_commit_buffer(struct jsonsink *s, size_t len)
 void *
 jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len)
 {
+        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
+                        s->has_key);
         may_write_comma(s);
         return jsonsink_reserve_buffer(s, len);
 }
@@ -193,24 +222,37 @@ jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
 {
         jsonsink_commit_buffer(s, len);
         s->need_comma = true;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = false;
+#endif
 }
 
 void
 jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
 {
+        JSONSINK_ASSERT(s->level > 0 && s->is_obj[s->level - 1]);
+        JSONSINK_ASSERT(!s->has_key);
         may_write_comma(s);
         write_serialized(s, key, keylen);
         write_char(s, ':');
         s->need_comma = false;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = true;
+#endif
 }
 
 void
 jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
                               size_t valuelen)
 {
+        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
+                        s->has_key);
         may_write_comma(s);
         write_serialized(s, value, valuelen);
         s->need_comma = true;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = false;
+#endif
 }
 
 void

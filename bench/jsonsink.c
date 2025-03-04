@@ -84,6 +84,7 @@ test_with_static_buffer(unsigned int n, const double *data_double,
         sink.fp = stdout;
         s->flush = flush;
         build(s, n, data_double, data_u32);
+        jsonsink_check(s);
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
@@ -102,6 +103,7 @@ test_with_malloc(unsigned int n, const double *data_double,
         int ret = 0;
         jsonsink_init(s);
         build(s, n, data_double, data_u32);
+        jsonsink_check(s);
         int error = jsonsink_error(s);
         if (error != JSONSINK_ERROR_NO_BUFFER_SPACE) {
                 printf("jsonsink error: %d\n", error);
@@ -164,6 +166,7 @@ test_with_realloc(unsigned int n, const double *data_double,
         jsonsink_init(s);
         s->flush = realloc_flush;
         build(s, n, data_double, data_u32);
+        jsonsink_check(s);
         int error = jsonsink_error(s);
         if (error != 0) {
                 printf("jsonsink error: %d\n", error);

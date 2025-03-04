@@ -24,8 +24,10 @@
  * SUCH DAMAGE.
  */
 
-#include <assert.h>
 #include <inttypes.h>
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+#include <math.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 
@@ -41,7 +43,7 @@ jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        assert(ret < maxlen);
+        JSONSINK_ASSERT(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 
@@ -55,13 +57,15 @@ jsonsink_add_int32(struct jsonsink *s, int32_t v)
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        assert(ret < maxlen);
+        JSONSINK_ASSERT(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 
 void
 jsonsink_add_double(struct jsonsink *s, double v)
 {
+        JSONSINK_ASSERT(!isnan(v));
+        JSONSINK_ASSERT(!isinf(v));
         const size_t maxlen = 64;
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = snprintf(dest, dest != NULL ? maxlen : 0, "%1.17g", v);
