@@ -24,9 +24,6 @@
  * SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "bench.h"
 #include "rapidjson/writer.h"
 
