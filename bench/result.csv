@@ -1,11 +1,11 @@
-jsonsink+snprintf (static buffer), 15620.4
-jsonsink+snprintf (malloc), 7904.4
-jsonsink+snprintf (realloc), 15252
-jsonsink+jnum (static buffer), 188642
-jsonsink+jnum (malloc), 108352
-jsonsink+jnum (realloc), 164613
-snprintf, 16317.6
-ljson sax, 140573
-rapidjson writer, 77708.9
-parson, 4196.65
-flatbuffers, 381608
+jsonsink+snprintf (static buffer), 15658.8
+jsonsink+snprintf (malloc), 7964.51
+jsonsink+snprintf (realloc), 15378
+jsonsink+jnum (static buffer), 189540
+jsonsink+jnum (malloc), 108785
+jsonsink+jnum (realloc), 163702
+snprintf, 16338.3
+ljson sax, 141107
+rapidjson writer, 94974.6
+parson, 4244.2
+flatbuffers, 527251
