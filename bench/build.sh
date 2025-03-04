@@ -1,5 +1,8 @@
 #! /bin/sh
 
+set -x
+set -e
+
 #DBG="-D JSONSINK_ENABLE_ASSERTIONS"
 DBG="-D NDEBUG"
 CC="cc -g -O2 -flto=full ${DBG}"
