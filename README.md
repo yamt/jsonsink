@@ -40,11 +40,14 @@ A small and fast JSON producer written in C.
 
 * It ended up with benchmarking the conversion from binary numbers to
   strings. (itoa/dtoa)
-  `jsonsink+snprintf`, `parson`, and `snprintf` use libc snprintf for
+
+  * `jsonsink+snprintf`, `parson`, and `snprintf` use libc snprintf for
   the conversion.
-  `jsonsink+jnum`, `rapidjson`, and `ljson` use more performant implementations
-  of the conversion.
-  `flatbuffers` is very fast because it doesn't involve the conversions.
+
+  * `jsonsink+jnum`, `rapidjson`, and `ljson` use more performant
+    implementations of the conversion.
+
+  * `flatbuffers` is very fast because it doesn't involve the conversions.
 
 * `jsonsink (malloc)` is expected to be about twice slower than
   `jsonsink (static buffer)` because it calculates the necessay buffer size 
