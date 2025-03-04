@@ -23,6 +23,8 @@ A small and fast JSON producer written in C.
 
 ![Graph](./bench/result.png)
 
+* It measures the speed to generate JSON like [this](bench/example.json).
+
 * Larger is better.
 
 * Taken on a macOS/amd64 laptop:
