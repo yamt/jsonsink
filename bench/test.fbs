@@ -1,0 +1,14 @@
+// flatc --cpp test.fbs
+
+namespace Test;
+
+table Obj {
+  u32:uint32;
+  double_array:[float64];
+}
+
+table Root {
+  array:[Obj];
+}
+
+root_type Root;
