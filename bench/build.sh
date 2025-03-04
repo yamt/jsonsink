@@ -37,6 +37,7 @@ bench.c \
 rng.c \
 snprintf.c
 
+# homebrew-installed flatbuffers
 FLATBUFFERS=/usr/local/opt/flatbuffers
 ${CXX} \
 -std=c++17 \
