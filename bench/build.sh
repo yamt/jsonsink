@@ -27,6 +27,15 @@ ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization_jnum.c \
 ${LJSON}/jnum.c
 
+FLATBUFFERS=/usr/local/opt/flatbuffers
+${CXX} \
+-std=c++17 \
+-I ${FLATBUFFERS}/include \
+-o flatbuffers \
+bench.c \
+rng.c \
+flatbuffers.cxx
+
 ${CC} \
 -D JSON_SAX_APIS_SUPPORT \
 -o ljson \

@@ -7,7 +7,14 @@ for t in $TESTS; do
 	./$t --test | python -m json.tool | openssl sha256 >&2
 done
 
+TMP=$(mktemp -d)
+./flatbuffers --test > $TMP/test.bin
+flatc --raw-binary --json --strict-json test.fbs -- $TMP/test.bin
+printf "%13.13s:" flatbuffers >&2
+python -m json.tool test.json | openssl sha256 >& 2
+
 # benchmark
 for t in $TESTS; do
 	./$t
 done
+./flatbuffers
