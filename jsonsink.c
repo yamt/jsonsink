@@ -123,7 +123,7 @@ jsonsink_set_error(struct jsonsink *s, int error)
         set_error(s, error);
 }
 
-void *
+const void *
 jsonsink_pointer(const struct jsonsink *s)
 {
         return s->buf;

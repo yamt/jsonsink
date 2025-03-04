@@ -41,6 +41,23 @@ extern "C" {
 #define JSONSINK_ERROR_SERIALIZATION 3
 
 struct jsonsink {
+        /*
+         *                 +------------+ ^ ^
+         *          buf -> |            | | |
+         *                 | generated  | | |
+         *                 | JSON       | | |
+         *                 | fragment   | | |
+         *                 |            | | | bufpos
+         *                 +------------+ | v
+         * buf + bufpos -> |            | |
+         *                 | garbage    | |
+         *                 |            | |
+         *                 |            | |
+         *                 |            | | buflen
+         *                 +------------+ v
+         * buf + buflen ->
+         */
+
         void *buf;     /* buffer to write */
         size_t buflen; /* the size of the buffer */
         size_t bufpos; /* the next position to write in the buffer */
@@ -81,11 +98,35 @@ struct jsonsink {
 
 void jsonsink_init(struct jsonsink *s);
 void jsonsink_set_buffer(struct jsonsink *s, void *buf, size_t buflen);
+
+/*
+ * jsonsink_flush: call the 's->flush' callback and record errors if any
+ * so that the user can check it with jsonsink_error() later.
+ */
+
 bool jsonsink_flush(struct jsonsink *s, size_t needed);
-void jsonsink_clear(struct jsonsink *s);
+
+/*
+ * jsonsink_error: query the recorded error.
+ */
+
 int jsonsink_error(const struct jsonsink *s);
+
+/*
+ * jsonsink_set_error: record an error.
+ *
+ * this is intended to be used by serialization logic
+ * like jsonsink_add_double().
+ */
+
 void jsonsink_set_error(struct jsonsink *s, int error);
-void *jsonsink_pointer(const struct jsonsink *s);
+
+/*
+ * jsonsink_pointer/jsonsink_size: these functions are intended
+ * to be used by the api user to access the generated JSON.
+ */
+
+const void *jsonsink_pointer(const struct jsonsink *s);
 size_t jsonsink_size(const struct jsonsink *s);
 
 /*
