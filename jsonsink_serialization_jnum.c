@@ -62,9 +62,6 @@ jsonsink_add_double(struct jsonsink *s, double v)
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_dtoa(v, dest != NULL ? dest : tmp);
-        if (ret >= maxlen) {
-                jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
-                return;
-        }
+        JSONSINK_ASSERT(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
