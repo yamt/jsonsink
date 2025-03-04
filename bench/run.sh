@@ -7,6 +7,7 @@ for t in $TESTS; do
 	./$t --test | python -m json.tool | openssl sha256 >&2
 done
 
+# convert the flatbuffers output to json so that it's comparable with others
 TMP=$(mktemp -d)
 ./flatbuffers --test > $TMP/test.bin
 flatc --raw-binary --json --strict-json test.fbs -- $TMP/test.bin
