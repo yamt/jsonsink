@@ -23,10 +23,16 @@ A small and fast JSON producer written in C.
 
 ![Graph](./bench/result.png)
 
-* It measures the speed to generate JSON objects, an equivalent of
-  [this](bench/example.json).
+* `obj per second`
 
-* Larger is better.
+  * Larger is better.
+
+  * It measures the speed to generate JSON objects, an equivalent of
+    [this](bench/example.json).
+
+* `peak heap usage`
+
+  * Smaller is better.
 
 * Taken on a macOS/amd64 laptop:
 
@@ -70,7 +76,7 @@ A small and fast JSON producer written in C.
 * `parson` is not a fair comparison because it uses a DOM-based api.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
-  the necessary buffer size.
+  the necessary buffer size and using a large enough static buffer.
 
 ### Benchmark code
 
