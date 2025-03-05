@@ -125,12 +125,12 @@ struct interpose {
         void *orig_func;
 };
 
-struct interpose interpose_malloc[]
-        __attribute__((section("__DATA,__interpose"))) = {
-                {(void *)_malloc, (void *)malloc},
-                {(void *)_calloc, (void *)calloc},
-                {(void *)_free, (void *)free},
-                {(void *)_realloc, (void *)realloc},
-                {(void *)_reallocf, (void *)reallocf},
-                {(void *)_aligned_alloc, (void *)aligned_alloc},
+__attribute__((used)) __attribute__((section(
+        "__DATA,__interpose"))) static struct interpose interpose_malloc[] = {
+        {(void *)_malloc, (void *)malloc},
+        {(void *)_calloc, (void *)calloc},
+        {(void *)_free, (void *)free},
+        {(void *)_realloc, (void *)realloc},
+        {(void *)_reallocf, (void *)reallocf},
+        {(void *)_aligned_alloc, (void *)aligned_alloc},
 };
