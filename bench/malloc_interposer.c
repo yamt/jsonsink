@@ -24,6 +24,14 @@
  * SUCH DAMAGE.
  */
 
+/*
+ * a shared library to hook malloc and friends with a help of dyld.
+ *
+ * eg.
+ *   cc -shared -o malloc_interposer.dylib malloc_interposer.c
+ *   DYLD_INSERT_LIBRARIES=malloc_interposer.dylib ./testee
+ */
+
 #include <malloc/malloc.h>
 #include <stdlib.h>
 
