@@ -42,20 +42,19 @@ extern "C" {
 
 struct jsonsink {
         /*
-         *                 +------------+ ^ ^
-         *          buf -> |            | | |
+         *          buf -> +------------+ ^ ^
+         *                 |            | | |
          *                 | generated  | | |
          *                 | JSON       | | |
          *                 | fragment   | | |
          *                 |            | | | bufpos
-         *                 +------------+ | v
-         * buf + bufpos -> |            | |
+         * buf + bufpos -> +------------+ | v
+         *                 |            | |
          *                 | garbage    | |
          *                 |            | |
          *                 |            | |
          *                 |            | | buflen
-         *                 +------------+ v
-         * buf + buflen ->
+         * buf + bufles -> +------------+ v
          */
 
         void *buf;     /* buffer to write */
