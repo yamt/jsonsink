@@ -66,9 +66,15 @@ A small and fast JSON producer written in C.
     * https://github.com/miloyip/dtoa-benchmark
     * https://github.com/abolz/Drachennest
 
-* `jsonsink (malloc)` is expected to be about twice slower than
-  `jsonsink (static buffer)` because it calculates the necessay buffer size 
-  with a dry-run.
+* `jsonsink (static)` uses a small (64 bytes) static buffer.
+  when the buffer gets full, it flushes the buffer.
+
+* `jsonsink (malloc)` uses two-path strategy. it first calculates the
+  size of JSON, allocate the buffer of the size with malloc(), and then
+  generate JSON to the buffer. this it's expected to be about twice slower
+  than `jsonsink (static buffer)`.
+
+* `jsonsink (realloc)` extends the buffer using realloc() when it gets full.
 
 * `flatbuffers` is not a fair comparison because it doesn't produce JSON.
   I included it just as a base line.
