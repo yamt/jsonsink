@@ -5,8 +5,10 @@ set -e
 
 #DBG="-D JSONSINK_ENABLE_ASSERTIONS"
 DBG="-D NDEBUG"
-CC="cc -g -O2 -flto=full ${DBG}"
-CXX="c++ -g -O2 -flto=full ${DBG}"
+CC="cc -g -O2 -flto=full -undefined dynamic_lookup ${DBG}"
+CXX="c++ -g -O2 -flto=full -undefined dynamic_lookup ${DBG}"
+
+${CC} -shared -o malloc_interposer.so malloc_interposer.c
 
 JSONSINK=..
 ${CC} \

@@ -16,6 +16,6 @@ python -m json.tool test.json | openssl sha256 >& 2
 
 # benchmark
 for t in $TESTS; do
-	./$t
+	DYLD_INSERT_LIBRARIES=malloc_interposer.so ./$t
 done
-./flatbuffers
+DYLD_INSERT_LIBRARIES=malloc_interposer.so ./flatbuffers
