@@ -28,6 +28,7 @@ df.plot.barh(
     color="#a98d1980",
     position=1,
     xlabel="byte",
+    ylabel="",
     ax=ax2,
 )
 
