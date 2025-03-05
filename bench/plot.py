@@ -8,8 +8,8 @@ print(df)
 df = df[::-1]
 
 fig = plt.figure()
-ax1 = fig.add_subplot(1, 1, 1)
-ax2 = ax1.twiny()
+ax2 = fig.add_subplot(1, 1, 1)
+ax1 = ax2.twiny()
 
 df.plot.barh(
     x=0,
