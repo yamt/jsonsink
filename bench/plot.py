@@ -39,5 +39,5 @@ ax2.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
 
 plt.title("json generator benchmark")
 plt.tight_layout()
-#plt.savefig("result.png")
+# plt.savefig("result.png")
 plt.savefig("result.svg", format="svg")
