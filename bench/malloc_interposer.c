@@ -89,7 +89,6 @@ _realloc(void *p, size_t sz)
 void *
 _reallocf(void *p, size_t sz)
 {
-        size_t osz = 0;
         if (p != NULL) {
                 malloc_stat.allocated_bytes -= malloc_size(p);
         }
