@@ -24,6 +24,7 @@
  * SUCH DAMAGE.
  */
 
+#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,7 @@
 #include <time.h>
 
 #include "bench.h"
+#include "malloc_interposer.h"
 #include "rng.h"
 
 bool test_run;
@@ -99,6 +101,24 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         random_u32(&rng, ndata, data_u32);
         random_double(&rng, ndata * 4, data_double);
 
+        struct malloc_stat *stat = &malloc_stat;
+        size_t peak = 0;
+        size_t base = 0;
+        if (stat != NULL) {
+                /*
+                 * macOS libc dtoa seems to cache heap allocations for bignums.
+                 * as we are not interested in them, perform dummy dtoa
+                 * operations to populate the cache enough before measuring
+                 * heap allocations.
+                 */
+                for (i = 0; i < 64; i++) {
+                        char buf[64];
+                        snprintf(buf, sizeof(buf), "%1.17g", 1.0 / i / i / i);
+                }
+                base = stat->allocated_bytes;
+                stat->peak_allocated_bytes = base; /* reset */
+        }
+
         ret = clock_gettime(cid, &start);
         if (ret != 0) {
                 fprintf(stderr, "clock_gettime failed\n");
@@ -116,7 +136,15 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
         double cps = n / (end_sec - start_sec);
         if (!test_run) {
-                printf("%s, %g\n", label, cps);
+                if (stat != NULL) {
+                        peak = stat->peak_allocated_bytes;
+                        size_t now = stat->allocated_bytes;
+                        if (now != base) {
+                                fprintf(stderr, "memory leak? %zu != %zu\n",
+                                        now, base);
+                        }
+                }
+                printf("%s, %g, %zu\n", label, cps, peak - base);
         }
 }
 
