@@ -85,6 +85,7 @@ test_with_static_buffer(unsigned int n, const double *data_double,
         s->flush = flush;
         build(s, n, data_double, data_u32);
         jsonsink_check(s);
+        /* note: our flush callback always empties the buffer */
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
@@ -101,6 +102,11 @@ test_with_malloc(unsigned int n, const double *data_double,
         struct jsonsink s0;
         struct jsonsink *s = &s0;
         int ret = 0;
+
+        /*
+         * first, calculate the size
+         */
+
         jsonsink_init(s);
         build(s, n, data_double, data_u32);
         jsonsink_check(s);
@@ -109,12 +115,22 @@ test_with_malloc(unsigned int n, const double *data_double,
                 printf("jsonsink error: %d\n", error);
                 return 1;
         }
+
+        /*
+         * allocate the buffer of the calculated size
+         */
+
         size_t sz = jsonsink_size(s);
         void *buf = malloc(sz);
         if (buf == NULL) {
                 printf("malloc failure\n");
                 return 1;
         }
+
+        /*
+         * finally, generate JSON into the allocated buffer
+         */
+
         jsonsink_init(s);
         jsonsink_set_buffer(s, buf, sz);
         build(s, n, data_double, data_u32);
@@ -146,6 +162,10 @@ realloc_flush(struct jsonsink *s, size_t needed)
         if (s->buflen > newsize) {
                 return true;
         }
+        /*
+         * to reduce the number of realloc, allocate bit more (1.5x)
+         * than strictly necessary.
+         */
         newsize += newsize / 2;
         void *p = realloc(s->buf, newsize);
         if (p == NULL) {
