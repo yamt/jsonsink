@@ -19,7 +19,7 @@ df.plot.barh(
     ylabel="",
     ax=ax1,
 )
-ax1.tick_params(axis='x', labelrotation=90)
+ax1.set_xlim([0, 450000])
 
 df.plot.barh(
     x=0,
