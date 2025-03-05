@@ -34,6 +34,8 @@ A small and fast JSON producer written in C.
 
   * Smaller is better.
 
+  * Measured with a simple [malloc interposer](bench/malloc_interposer.c).
+
 * Taken on a macOS/amd64 laptop:
 
   ```
