@@ -250,6 +250,13 @@ void jsonsink_add_double(struct jsonsink *s, double v);
  * utf-8
  **************************************************************************/
 
+/*
+ * jsonsink_add_string: add an utf-8 string value.
+ * the input should be a valid utf-8 sequence. it can contain a NUL. (\u0000)
+ * this function performs necessary escaping.
+ * the current implementation is straightforward and slow.
+ */
+
 void jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz);
 
 /**************************************************************************
