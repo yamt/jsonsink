@@ -21,7 +21,7 @@ A small and fast JSON producer written in C.
 
 ## Benchmark
 
-![Graph](./bench/result.png)
+![Graph](./bench/result.svg)
 
 * `obj per second`
 
