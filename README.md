@@ -92,16 +92,12 @@ A small and fast JSON producer written in C.
 
 ### Benchmark code
 
-* [jsonsink](./bench/jsonsink.c)
-
-* [snprintf](./bench/snprintf.c)
-
-* [ljson](./bench/ljson.c)
-
-* [rapidjson](./bench/rapidjson.cxx)
-
-* [cjson](./bench/cjson.c)
-
-* [parson](./bench/parson.c)
-
-* [flatbuffers](./bench/flatbuffers.cxx)
+| test code                              | library
+| -------------------------------------- | ------------------------------------------
+| [jsonsink](./bench/jsonsink.c)         | https://github.com/yamt/jsonsink
+| [snprintf](./bench/snprintf.c)         | libc snprintf
+| [ljson](./bench/ljson.c)               | https://github.com/lengjingzju/json
+| [rapidjson](./bench/rapidjson.cxx)     | https://github.com/Tencent/rapidjson/
+| [cjson](./bench/cjson.c)               | https://github.com/DaveGamble/cJSON
+| [parson](./bench/parson.c)             | https://github.com/kgabis/parson
+| [flatbuffers](./bench/flatbuffers.cxx) | https://github.com/google/flatbuffers
