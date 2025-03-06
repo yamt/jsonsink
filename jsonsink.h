@@ -317,6 +317,10 @@ void jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz);
  * jsonsink_check is expected to be called at the end of a json producer
  * logic to ensure the completeness of the json object. it would detect
  * errors like missing the last jsonsink_object_end call.
+ *
+ * Note: JSONSINK_ENABLE_ASSERTIONS (and the associated constant
+ * JSONSINK_MAX_NEST) changes the ABI of this library. please build everything
+ * with or without JSONSINK_ENABLE_ASSERTIONS consistently.
  */
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
 #include <stdio.h>
