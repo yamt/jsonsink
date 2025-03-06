@@ -111,6 +111,9 @@ bool jsonsink_flush(struct jsonsink *s, size_t needed);
 
 /*
  * jsonsink_error: query the recorded error.
+ *
+ * when jsonsink_error() returns JSONSINK_ERROR_NO_BUFFER_SPACE,
+ * a user can use jsonsink_size() to query the necessary buffer size.
  */
 
 int jsonsink_error(const struct jsonsink *s);
