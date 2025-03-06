@@ -67,6 +67,15 @@ bench.c \
 rng.c \
 rapidjson.cxx
 
+CJSON=deps/cJSON
+${CC} \
+-o cjson \
+-I ${CJSON} \
+bench.c \
+rng.c \
+cjson.c \
+${CJSON}/cJSON.c
+
 PARSON=deps/parson
 ${CC} \
 -o parson \

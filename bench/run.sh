@@ -1,4 +1,4 @@
-TESTS="jsonsink jsonsink-jnum snprintf ljson rapidjson parson"
+TESTS="jsonsink jsonsink-jnum snprintf ljson rapidjson cjson parson"
 
 # quick test
 printf "%13.13s:0b4864bde11d7f8893994605eca96bfc928337d3b04f1a08fcf8a515ca08d4ac\n" expected >&2
