@@ -259,7 +259,8 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
 /**************************************************************************
  * serialization utility api
  *
- * note: these functions are expected slow.
+ * implementation: jsonsink_serialization.c
+ * alternative implementation: jsonsink_serialization_jnum.c
  **************************************************************************/
 
 /*
@@ -298,6 +299,8 @@ void jsonsink_add_double(struct jsonsink *s, double v);
 
 /**************************************************************************
  * utf-8 and string escaping
+ *
+ * implementation: jsonsink_serialization.c
  **************************************************************************/
 
 /*
