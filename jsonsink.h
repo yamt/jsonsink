@@ -186,6 +186,10 @@ void jsonsink_value_end(struct jsonsink *s);
 /*
  * the low-level api to add raw fragments as they are
  * without affecting the other library states.
+ *
+ * a fragment here just means a raw byte array.
+ * the library doesn't interpret the contents of fragments.
+ * it can be used to compose a JSON value with multiple fragments for example.
  */
 
 void *jsonsink_reserve_buffer(struct jsonsink *s, size_t len);
@@ -211,7 +215,7 @@ void jsonsink_add_fragment(struct jsonsink *s, const char *frag, size_t len);
  *   + jsonsink_add_serialized_value_commit.
  *
  * jsonsink_add_escaped_string only quotes the given string.
- * it's the user's responsibily to pass the string which doesn't
+ * it's the user's responsibily to pass a string which doesn't
  * need further escaping. that is, it doesn't contain '"', '\\', '\0',
  * or control characters.
  */
@@ -288,6 +292,8 @@ void jsonsink_add_double(struct jsonsink *s, double v);
  * the input should be a valid utf-8 sequence.
  *   - it should not contain surrogate halves.
  *   - it CAN contain a NUL. (\u0000)
+ * it's users' responsibility to pass a valid utf-8 string.
+ * the library doesn't perform any validations.
  *
  * the current implementation is straightforward and slow.
  */
