@@ -66,7 +66,10 @@ build(struct jsonsink *s)
         jsonsink_add_serialized_value(s, "200", 3);
         JSONSINK_ADD_LITERAL_KEY(s, "array1");
         jsonsink_array_start(s);
-        jsonsink_add_string(s, JSONSINK_LITERAL("こんにちは, \0 world"));
+        jsonsink_add_string(s, JSONSINK_LITERAL("こんにちは, world"));
+        jsonsink_add_string(s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
+        /* https://util.unicode.org/UnicodeJsps/character.jsp?a=1F977 */
+        jsonsink_add_string(s, JSONSINK_LITERAL("ninja \xf0\x9f\xa5\xb7"));
         uint32_t i;
         for (i = 0; i < 100; i++) {
                 jsonsink_object_start(s);
