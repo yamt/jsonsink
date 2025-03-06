@@ -67,7 +67,8 @@ build(struct jsonsink *s)
         JSONSINK_ADD_LITERAL_KEY(s, "array1");
         jsonsink_array_start(s);
         jsonsink_add_string(s, JSONSINK_LITERAL("こんにちは, world"));
-        jsonsink_add_string(s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
+        jsonsink_add_string(s,
+                            JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
         /* https://util.unicode.org/UnicodeJsps/character.jsp?a=1F977 */
         jsonsink_add_string(s, JSONSINK_LITERAL("ninja \xf0\x9f\xa5\xb7"));
         uint32_t i;
