@@ -63,6 +63,7 @@ struct jsonsink {
 
         /*
          * the `flush` callback is used to make a space in the buffer.
+         *
          * it should make at least `needed` bytes available at `s->bufpos`.
          * it returns true on success.
          *
@@ -70,6 +71,8 @@ struct jsonsink {
          * - process the data in the buffer and empty it. (by `s->bufpos = 0`)
          * - extend the buffer. (eg. realloc)
          * - replace the buffer with a new one.
+         *
+         * 's->flush = NULL' is an equivalent of a callback which always fails.
          */
         bool (*flush)(struct jsonsink *s, size_t needed);
 
