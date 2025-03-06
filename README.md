@@ -77,12 +77,12 @@ A small and fast JSON producer written in C.
 
 * `jsonsink (realloc)` extends the buffer using realloc() when it gets full.
 
-* `flatbuffers` is not a fair comparison because it doesn't produce JSON.
+* `flatbuffers` is not fair because it doesn't produce JSON.
   I included it just as a base line.
   The serialized object contains the equivalent of the JSON ones.
   (See its [schema](./bench/test.fbs).)
 
-* `cjson` and `parson` are not a fair comparison because they use a DOM-based api.
+* `cjson` and `parson` are not fair because they use DOM-based apis.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
   the necessary buffer size and using a large enough static buffer.
