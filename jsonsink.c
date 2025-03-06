@@ -245,9 +245,7 @@ jsonsink_add_bool(struct jsonsink *s, bool v)
 void *
 jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len)
 {
-        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
-                        s->has_key);
-        may_write_comma(s);
+        value_start(s);
         return reserve_buffer(s, len);
 }
 
@@ -255,10 +253,7 @@ void
 jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
 {
         commit_buffer(s, len);
-        s->need_comma = true;
-#if defined(JSONSINK_ENABLE_ASSERTIONS)
-        s->has_key = false;
-#endif
+        value_end(s);
 }
 
 void
