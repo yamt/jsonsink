@@ -106,16 +106,13 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         size_t base = 0;
         if (stat != NULL) {
                 /*
-                 * macOS libc dtoa seems to cache heap allocations for bignums.
-                 * as we are not interested in them, perform dummy dtoa
-                 * operations to populate the cache enough before measuring
-                 * heap allocations.
+                 * the dtoa implementation in macOS libc seems to cache some
+                 * heap allocations for bignums. as we are not interested in
+                 * them, perform a dry run to populate the cache enough before
+                 * getting the baseline of heap alloctaions.
                  */
-                for (i = 0; i < 64; i++) {
-                        char buf[64];
-                        snprintf(buf, sizeof(buf), "%1.17g", 1.0 / i / i / i);
-                }
-                base = stat->allocated_bytes;
+                fn(ndata, data_double, data_u32);
+                base = stat->allocated_bytes;      /* baseline */
                 stat->peak_allocated_bytes = base; /* reset */
         }
 
