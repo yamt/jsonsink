@@ -82,7 +82,7 @@ A small and fast JSON producer written in C.
   The serialized object contains the equivalent of the JSON ones.
   (See its [schema](./bench/test.fbs).)
 
-* `parson` is not a fair comparison because it uses a DOM-based api.
+* `cjson` and `parson` are not a fair comparison because they use a DOM-based api.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
   the necessary buffer size and using a large enough static buffer.
@@ -96,6 +96,8 @@ A small and fast JSON producer written in C.
 * [ljson](./bench/ljson.c)
 
 * [rapidjson](./bench/rapidjson.cxx)
+
+* [cjson](./bench/cjson.c)
 
 * [parson](./bench/parson.c)
 
