@@ -66,6 +66,7 @@ build(struct jsonsink *s)
         jsonsink_add_serialized_value(s, "200", 3);
         JSONSINK_ADD_LITERAL_KEY(s, "array1");
         jsonsink_array_start(s);
+        jsonsink_add_string(s, JSONSINK_LITERAL("こんにちは, \0 world"));
         uint32_t i;
         for (i = 0; i < 100; i++) {
                 jsonsink_object_start(s);
