@@ -165,13 +165,13 @@ jsonsink_size(const struct jsonsink *s)
 void
 jsonsink_object_start(struct jsonsink *s)
 {
+        value_start(s);
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
         s->is_obj[s->level] = true;
         JSONSINK_ASSERT(++s->level > 0);
         JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
         s->has_key = false;
 #endif
-        may_write_comma(s);
         write_char(s, '{');
         s->need_comma = false;
 }
@@ -183,19 +183,19 @@ jsonsink_object_end(struct jsonsink *s)
         JSONSINK_ASSERT(s->level-- > 0);
         JSONSINK_ASSERT(s->is_obj[s->level]);
         write_char(s, '}');
-        s->need_comma = true;
+        value_end(s);
 }
 
 void
 jsonsink_array_start(struct jsonsink *s)
 {
+        value_start(s);
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
         s->is_obj[s->level] = false;
         JSONSINK_ASSERT(++s->level > 0);
         JSONSINK_ASSERT(s->level <= JSONSINK_MAX_NEST);
         s->has_key = false;
 #endif
-        may_write_comma(s);
         write_char(s, '[');
         s->need_comma = false;
 }
@@ -207,7 +207,7 @@ jsonsink_array_end(struct jsonsink *s)
         JSONSINK_ASSERT(s->level-- > 0);
         JSONSINK_ASSERT(!s->is_obj[s->level]);
         write_char(s, ']');
-        s->need_comma = true;
+        value_end(s);
 }
 
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
