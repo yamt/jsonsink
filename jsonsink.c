@@ -80,6 +80,23 @@ may_write_comma(struct jsonsink *s)
         }
 }
 
+static void
+value_start(struct jsonsink *s)
+{
+        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
+                        s->has_key);
+        may_write_comma(s);
+}
+
+static void
+value_end(struct jsonsink *s)
+{
+        s->need_comma = true;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = false;
+#endif
+}
+
 void
 jsonsink_init(struct jsonsink *s)
 {
@@ -229,18 +246,13 @@ jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
 void
 jsonsink_value_start(struct jsonsink *s)
 {
-        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
-                        s->has_key);
-        may_write_comma(s);
+        value_start(s);
 }
 
 void
 jsonsink_value_end(struct jsonsink *s)
 {
-        s->need_comma = true;
-#if defined(JSONSINK_ENABLE_ASSERTIONS)
-        s->has_key = false;
-#endif
+        value_end(s);
 }
 
 void *
@@ -279,26 +291,18 @@ void
 jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
                               size_t valuelen)
 {
-        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
-                        s->has_key);
-        may_write_comma(s);
+        value_start(s);
         write_serialized(s, value, valuelen);
-        s->need_comma = true;
-#if defined(JSONSINK_ENABLE_ASSERTIONS)
-        s->has_key = false;
-#endif
+        value_end(s);
 }
 
 void
 jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
                             size_t valuelen)
 {
-        may_write_comma(s);
+        value_start(s);
         write_char(s, '"');
         write_serialized(s, value, valuelen);
         write_char(s, '"');
-        s->need_comma = true;
-#if defined(JSONSINK_ENABLE_ASSERTIONS)
-        s->has_key = false;
-#endif
+        value_end(s);
 }
