@@ -38,6 +38,9 @@ struct surrogates {
 static struct surrogates
 calculate_sarrogates(uint32_t code)
 {
+        /*
+         * https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-3/#G31699
+         */
         JSONSINK_ASSERT(code >= 0x10000);
         uint16_t w = ((code >> 16) & 0x001f) - 1;
         uint16_t high = 0xd800 | (w << 6) | ((code & 0xffff) >> 10);
@@ -50,6 +53,9 @@ calculate_sarrogates(uint32_t code)
 void
 jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
 {
+        /*
+         * https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-3/#G31703
+         */
         const uint8_t *p = (const void *)cp;
         const uint8_t *ep = p + sz;
         JSONSINK_ASSERT(p <= ep);
