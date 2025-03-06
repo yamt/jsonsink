@@ -31,6 +31,14 @@
 static void
 set_error(struct jsonsink *s, int error)
 {
+        /*
+         * this function is not expected to be used to clear errors.
+         *
+         * this function is not expected to be used to set
+         * JSONSINK_ERROR_NO_BUFFER_SPACE. it's handled by jsonsink_error().
+         */
+        JSONSINK_ASSERT(error != JSONSINK_OK);
+        JSONSINK_ASSERT(error != JSONSINK_ERROR_NO_BUFFER_SPACE);
         s->error = error;
 }
 
@@ -143,12 +151,14 @@ jsonsink_set_error(struct jsonsink *s, int error)
 const void *
 jsonsink_pointer(const struct jsonsink *s)
 {
+        JSONSINK_ASSERT(s->error == JSONSINK_OK);
         return s->buf;
 }
 
 size_t
 jsonsink_size(const struct jsonsink *s)
 {
+        JSONSINK_ASSERT(s->error == JSONSINK_OK);
         return s->bufpos;
 }
 
