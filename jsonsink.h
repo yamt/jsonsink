@@ -163,6 +163,36 @@ void *jsonsink_add_serialized_value_reserve(struct jsonsink *s, size_t len);
 void jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len);
 
 /*
+ * the low-level api to add a value in parts.
+ *
+ * eg.
+ *   jsonsink_value_start(s);
+ *   jsonsink_add_fragment(s, "first", 5);
+ *   p = jsonsink_reserve_buffer(s, 6);
+ *   if (p != NULL) {
+ *      memcpy(p, "second", 6);
+ *   }
+ *   jsonsink_commit_buffer(s, 6);
+ *   jsonsink_value_end(s);
+ *
+ * is an equivalent of
+ *
+ *   jsonsink_add_serialized_value(s, "first" "second", 5 + 6);
+ */
+
+void jsonsink_value_start(struct jsonsink *s);
+void jsonsink_value_end(struct jsonsink *s);
+
+/*
+ * the low-level api to add raw fragments as they are
+ * without affecting the other library states.
+ */
+
+void *jsonsink_reserve_buffer(struct jsonsink *s, size_t len);
+void jsonsink_commit_buffer(struct jsonsink *s, size_t len);
+void jsonsink_add_fragment(struct jsonsink *s, const char *frag, size_t len);
+
+/*
  * the api to deal with serialized key/value.
  *
  * these functions add a value (or key) which is already serialized.

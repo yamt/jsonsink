@@ -35,8 +35,8 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
         const uint8_t *ep = p + sz;
         JSONSINK_ASSERT(p <= ep);
 
-        jsonsink_add_serialized_value(s, "\"", 1);
-        s->need_comma = false;
+        jsonsink_value_start(s);
+        jsonsink_add_fragment(s, "\"", 1);
         while (p < ep) {
                 uint8_t u8 = *p++;
                 uint32_t code;
@@ -72,19 +72,18 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                 if (code <= 0x1f || code == 0x22 || code == 0x5c ||
                     code >= 0x7f) {
                         const size_t len = 6;
-                        void *dest = jsonsink_add_serialized_value_reserve(
-                                s, len + 1);
+                        void *dest = jsonsink_reserve_buffer(s, len + 1);
                         if (dest != NULL) {
                                 int ret = snprintf(dest, len + 1, "\\u%04x",
                                                    code);
                                 JSONSINK_ASSERT(ret == len);
                         }
-                        jsonsink_add_serialized_value_commit(s, len);
+                        jsonsink_commit_buffer(s, len);
                 } else {
                         uint8_t u8 = (uint8_t)code;
-                        jsonsink_add_serialized_value(s, (const char *)&u8, 1);
+                        jsonsink_add_fragment(s, (const char *)&u8, 1);
                 }
-                s->need_comma = false;
         }
-        jsonsink_add_serialized_value(s, "\"", 1);
+        jsonsink_add_fragment(s, "\"", 1);
+        jsonsink_value_end(s);
 }

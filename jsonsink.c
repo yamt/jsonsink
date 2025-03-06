@@ -227,6 +227,41 @@ jsonsink_add_serialized_value_commit(struct jsonsink *s, size_t len)
 }
 
 void
+jsonsink_value_start(struct jsonsink *s)
+{
+        JSONSINK_ASSERT((s->level > 0 && s->is_obj[s->level - 1]) ==
+                        s->has_key);
+        may_write_comma(s);
+}
+
+void
+jsonsink_value_end(struct jsonsink *s)
+{
+        s->need_comma = true;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = false;
+#endif
+}
+
+void *
+jsonsink_reserve_buffer(struct jsonsink *s, size_t len)
+{
+        return reserve_buffer(s, len);
+}
+
+void
+jsonsink_commit_buffer(struct jsonsink *s, size_t len)
+{
+        commit_buffer(s, len);
+}
+
+void
+jsonsink_add_fragment(struct jsonsink *s, const char *frag, size_t len)
+{
+        write_serialized(s, frag, len);
+}
+
+void
 jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
 {
         JSONSINK_ASSERT(s->level > 0 && s->is_obj[s->level - 1]);
@@ -263,4 +298,7 @@ jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
         write_serialized(s, value, valuelen);
         write_char(s, '"');
         s->need_comma = true;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->has_key = false;
+#endif
 }
