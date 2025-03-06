@@ -66,11 +66,40 @@ build(struct jsonsink *s)
         jsonsink_add_serialized_value(s, "200", 3);
         JSONSINK_ADD_LITERAL_KEY(s, "array1");
         jsonsink_array_start(s);
+
+        /*
+         * test a few object/array nesting
+         */
+        jsonsink_array_start(s);  /* array in array (first) */
+        jsonsink_object_start(s); /* object in array (first) */
+        JSONSINK_ADD_LITERAL_KEY(s, "o");
+        jsonsink_object_start(s); /* object in object (first) */
+        jsonsink_object_end(s);
+        JSONSINK_ADD_LITERAL_KEY(s, "a");
+        jsonsink_array_start(s); /* array in object (non-first) */
+        jsonsink_array_end(s);
+        jsonsink_object_end(s);
+        jsonsink_object_start(s); /* object in array (non-first) */
+        JSONSINK_ADD_LITERAL_KEY(s, "a");
+        jsonsink_array_start(s); /* array in object (first) */
+        jsonsink_array_end(s);
+        JSONSINK_ADD_LITERAL_KEY(s, "o");
+        jsonsink_object_start(s); /* object in object (non-first) */
+        jsonsink_object_end(s);
+        jsonsink_object_end(s);
+        jsonsink_array_end(s); /* array in array (non-first) */
+        jsonsink_array_start(s);
+        jsonsink_array_end(s);
+
+        /*
+         * test string escaping
+         */
         jsonsink_add_string(s, JSONSINK_LITERAL("こんにちは, world"));
         jsonsink_add_string(s,
                             JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
         /* https://util.unicode.org/UnicodeJsps/character.jsp?a=1F977 */
         jsonsink_add_string(s, JSONSINK_LITERAL("ninja \xf0\x9f\xa5\xb7"));
+
         uint32_t i;
         for (i = 0; i < 100; i++) {
                 jsonsink_object_start(s);
