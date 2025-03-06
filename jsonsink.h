@@ -72,10 +72,19 @@ struct jsonsink {
          * - replace the buffer with a new one.
          */
         bool (*flush)(struct jsonsink *s, size_t needed);
+
+        /*
+         * internal states. do not access them directly.
+         */
         int error;
         bool need_comma;
 
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
+        /*
+         * internal states used for extra validations.
+         *
+         * see the comments in the "debug stuff" section below.
+         */
         unsigned int level;
         bool has_key;
 #if !defined(JSONSINK_MAX_NEST)
