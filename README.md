@@ -30,6 +30,9 @@ A small and fast JSON producer written in C.
 
   * It measures the speed to generate JSON objects, an equivalent of
     [this](bench/example.json).
+    The size of the JSON object is typically 2669 bytes. (It varies a bit
+    among implementations because of different string representations of
+    numbers.)
 
 * `peak heap usage`
 
