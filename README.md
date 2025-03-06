@@ -7,9 +7,10 @@ A small and fast JSON producer written in C.
 * Performance
   * No implicit heap allocations
 * Correctness
-* Clean code
+  * If interoperability is not important, maybe you have better choices than JSON
 * Small footprint
   * Be able to produce JSON larger than available memory
+* Clean code
 * Portability
 
 ## Non-goals
