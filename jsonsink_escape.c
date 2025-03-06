@@ -57,7 +57,14 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
         jsonsink_value_start(s);
         jsonsink_add_fragment(s, "\"", 1);
         while (p < ep) {
+                /*
+                 * decode a character
+                 */
                 uint8_t u8 = *p++;
+                /* these bytes never appear in a valid utf-8 */
+                JSONSINK_ASSERT(u8 != 0xc0 && u8 != 0xc1 && u8 < 0xf5);
+                /* these bytes never appear at the beginning of a charater */
+                JSONSINK_ASSERT(u8 < 0x80 || 0xbf < u8);
                 uint32_t code;
                 if (u8 < 0x80) {
                         /* 1 byte */
@@ -69,6 +76,8 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                         JSONSINK_ASSERT((u8 & 0xe0) == 0xc0);
                         JSONSINK_ASSERT((p[0] & 0xc0) == 0x80);
                         code = ((u8 & 0x1f) << 6) | ((*p++) & 0x3f);
+                        /* reject overlog encodings */
+                        JSONSINK_ASSERT(0x80 <= code && code <= 0x7ff);
                 } else if (u8 < 0xf0) {
                         /* 3 byte */
                         JSONSINK_ASSERT(p + 2 <= ep);
@@ -77,6 +86,8 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                         JSONSINK_ASSERT((p[1] & 0xc0) == 0x80);
                         code = ((u8 & 0xf) << 12) | ((p[0] & 0x3f) << 6) |
                                (p[1] & 0x3f);
+                        /* reject overlog encodings */
+                        JSONSINK_ASSERT(0x800 <= code && code <= 0xffff);
                         p += 2;
                 } else {
                         /* 4 byte */
@@ -87,11 +98,18 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                         JSONSINK_ASSERT((p[2] & 0xc0) == 0x80);
                         code = ((u8 & 0x3) << 18) | ((p[0] & 0x3f) << 12) |
                                ((p[1] & 0x3f) << 6) | ((p[2]) & 0x3f);
+                        /* reject overlog encodings */
+                        JSONSINK_ASSERT(0x10000 <= code && code <= 0x10ffff);
                         p += 3;
                 }
                 JSONSINK_ASSERT(code <= 0x10ffff);
                 /* sarrogate halves should never appear in a utf-8 string */
                 JSONSINK_ASSERT(code < 0xd800 || 0xe000 <= code);
+
+                /*
+                 * trasnmit the decoded character.
+                 * escape if necessary.
+                 */
                 if (code >= 0x10000) {
                         /* extended character */
                         const size_t len = 12;
