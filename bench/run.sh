@@ -14,6 +14,13 @@ flatc --raw-binary --json --strict-json test.fbs -- $TMP/test.bin
 printf "%13.13s:" flatbuffers >&2
 python -m json.tool test.json | openssl sha256 >& 2
 
+for t in $TESTS; do
+	printf "%13.13s:" $t >&2
+	./$t --test | wc -c >&2
+done
+printf "%13.13s:" flatbuffers >&2
+./flatbuffers --test | wc -c >&2
+
 # benchmark
 for t in $TESTS; do
 	DYLD_INSERT_LIBRARIES=malloc_interposer.dylib ./$t
