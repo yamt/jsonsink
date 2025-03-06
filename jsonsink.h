@@ -54,7 +54,7 @@ struct jsonsink {
          *                 |            | |
          *                 |            | |
          *                 |            | | buflen
-         * buf + bufles -> +------------+ v
+         * buf + buflen -> +------------+ v
          */
 
         void *buf;     /* buffer to write */
