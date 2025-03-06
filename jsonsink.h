@@ -277,13 +277,18 @@ void jsonsink_add_int32(struct jsonsink *s, int32_t v);
 void jsonsink_add_double(struct jsonsink *s, double v);
 
 /**************************************************************************
- * utf-8
+ * utf-8 and string escaping
  **************************************************************************/
 
 /*
  * jsonsink_add_string: add an utf-8 string value.
- * the input should be a valid utf-8 sequence. it can contain a NUL. (\u0000)
+ *
  * this function performs necessary escaping.
+ *
+ * the input should be a valid utf-8 sequence.
+ *   - it should not contain surrogate halves.
+ *   - it CAN contain a NUL. (\u0000)
+ *
  * the current implementation is straightforward and slow.
  */
 
