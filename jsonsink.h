@@ -85,6 +85,7 @@ struct jsonsink {
          *
          * see the comments in the "debug stuff" section below.
          */
+        size_t reserved;
         unsigned int level;
         bool has_key;
 #if !defined(JSONSINK_MAX_NEST)

@@ -45,6 +45,7 @@ set_error(struct jsonsink *s, int error)
 static void *
 reserve_buffer(struct jsonsink *s, size_t len)
 {
+        JSONSINK_ASSERT(s->reserved == 0);
         size_t newbufpos = s->bufpos + len;
         if (newbufpos > s->buflen) {
                 if (s->flush != NULL) {
@@ -55,13 +56,20 @@ reserve_buffer(struct jsonsink *s, size_t len)
                         return NULL;
                 }
         }
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->reserved = len;
+#endif
         return (char *)s->buf + s->bufpos;
 }
 
 static void
 commit_buffer(struct jsonsink *s, size_t len)
 {
+        JSONSINK_ASSERT(len <= s->reserved);
         s->bufpos += len;
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->reserved = 0;
+#endif
 }
 
 static void
