@@ -24,9 +24,28 @@
  * SUCH DAMAGE.
  */
 
+#include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #include "jsonsink.h"
+
+struct surrogates {
+        uint16_t high;
+        uint16_t low;
+};
+
+static struct surrogates
+calculate_sarrogates(uint32_t code)
+{
+        JSONSINK_ASSERT(code >= 0x10000);
+        uint16_t w = ((code >> 16) & 0x001f) - 1;
+        uint16_t high = 0xd800 | (w << 6) | ((code & 0xffff) >> 10);
+        uint16_t low = 0xdc00 | (code & 0x3ff);
+        JSONSINK_ASSERT(0xd800 <= high && high <= 0xdbff);
+        JSONSINK_ASSERT(0xdc00 <= low && low <= 0xdfff);
+        return (struct surrogates){high, low};
+}
 
 void
 jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
@@ -62,15 +81,39 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                 } else {
                         /* 4 byte */
                         JSONSINK_ASSERT(p + 3 <= ep);
-                        JSONSINK_ASSERT((u8 & 0xf0) == 0xe0);
+                        JSONSINK_ASSERT((u8 & 0xf8) == 0xf0);
                         JSONSINK_ASSERT((p[0] & 0xc0) == 0x80);
                         JSONSINK_ASSERT((p[1] & 0xc0) == 0x80);
                         JSONSINK_ASSERT((p[2] & 0xc0) == 0x80);
                         code = ((u8 & 0x3) << 18) | ((p[0] & 0x3f) << 12) |
                                ((p[1] & 0x3f) << 6) | ((p[2]) & 0x3f);
+                        p += 3;
                 }
-                if (code <= 0x1f || code == 0x22 || code == 0x5c ||
-                    code >= 0x7f) {
+                JSONSINK_ASSERT(code <= 0x10ffff);
+                /* sarrogate halves should never appear in a utf-8 string */
+                JSONSINK_ASSERT(code < 0xd800 || 0xe000 <= code);
+                if (code >= 0x10000) {
+                        /* extended character */
+                        const size_t len = 12;
+                        void *dest = jsonsink_reserve_buffer(s, len + 1);
+                        if (dest != NULL) {
+                                struct surrogates sarrogates =
+                                        calculate_sarrogates(code);
+                                int ret = snprintf(
+                                        dest, len + 1,
+                                        "\\u%04" PRIx16 "\\u%04" PRIx16,
+                                        sarrogates.high, sarrogates.low);
+                                JSONSINK_ASSERT(ret == len);
+                        }
+                        jsonsink_commit_buffer(s, len);
+                } else if (code == 0x22) {
+                        /* " */
+                        jsonsink_add_fragment(s, (char[]){0x5c, 0x22}, 2);
+                } else if (code == 0x5c) {
+                        /* \ */
+                        jsonsink_add_fragment(s, (char[]){0x5c, 0x5c}, 2);
+                } else if (code <= 0x1f || code >= 0x7f) {
+                        /* control character */
                         const size_t len = 6;
                         void *dest = jsonsink_reserve_buffer(s, len + 1);
                         if (dest != NULL) {
@@ -80,6 +123,7 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                         }
                         jsonsink_commit_buffer(s, len);
                 } else {
+                        /* transmit as it is */
                         uint8_t u8 = (uint8_t)code;
                         jsonsink_add_fragment(s, (const char *)&u8, 1);
                 }
