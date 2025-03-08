@@ -34,6 +34,8 @@ A small and fast JSON producer written in C.
     among implementations because of different string representations of
     numbers.)
 
+    In case of `flatbuffers`, it generates 1696 bytes binary data.
+
 * `peak heap usage`
 
   * Smaller is better.
@@ -73,9 +75,9 @@ A small and fast JSON producer written in C.
 * `jsonsink (static)` uses a small (64 bytes) static buffer.
   when the buffer gets full, it flushes the buffer.
 
-* `jsonsink (malloc)` uses two-path strategy. it first calculates the
+* `jsonsink (malloc)` uses two-path strategy. It first calculates the
   size of JSON, allocate the buffer of the size with malloc(), and then
-  generate JSON to the buffer. this it's expected to be about twice slower
+  generate JSON to the buffer. Thus it's expected to be about twice slower
   than `jsonsink (static buffer)`.
 
 * `jsonsink (realloc)` extends the buffer using realloc() when it gets full.
