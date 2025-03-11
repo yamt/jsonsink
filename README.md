@@ -57,13 +57,13 @@ A small and fast JSON producer written in C.
   it seems that this benchmark ended up with measuring the performance
   of the conversion from binary numbers to strings. (itoa/dtoa)
 
-  * `jsonsink+snprintf`, `parson`, and `snprintf` use libc snprintf for
+  * `jsonsink+snprintf`, `Parson`, and `snprintf` use libc snprintf for
   the conversion.
 
-  * `jsonsink+jnum`, `rapidjson`, and `ljson` use more performant
+  * `jsonsink+jnum`, `RapidJSON`, and `LJSON` use more performant
     implementations of the conversion.
 
-  * `flatbuffers` is very fast because it doesn't involve the conversions.
+  * `FlatBuffers` is very fast because it doesn't involve the conversions.
 
   * In case you are interested in this area, there are dedicated
     benchmarks out there.
@@ -82,12 +82,12 @@ A small and fast JSON producer written in C.
 
 * `jsonsink (realloc)` extends the buffer using realloc() when it gets full.
 
-* `flatbuffers` is not fair to compare directly because it doesn't produce JSON.
+* `FlatBuffers` is not fair to compare directly because it doesn't produce JSON.
   I included it just as a base line.
   The serialized object contains the equivalent of the JSON ones.
   (See its [schema](./bench/test.fbs).)
 
-* `cjson` and `parson` are not fair to compare directly because they use DOM-based apis.
+* `cJSON` and `Parson` are not fair to compare directly because they use DOM-based apis.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
   the necessary buffer size and using a large enough static buffer.
@@ -98,8 +98,8 @@ A small and fast JSON producer written in C.
 | -------------------------------------- | ------------------------------------------
 | [jsonsink](./bench/jsonsink.c)         | https://github.com/yamt/jsonsink
 | [snprintf](./bench/snprintf.c)         | libc snprintf
-| [ljson](./bench/ljson.c)               | https://github.com/lengjingzju/json
-| [rapidjson](./bench/rapidjson.cxx)     | https://github.com/Tencent/rapidjson/
-| [cjson](./bench/cjson.c)               | https://github.com/DaveGamble/cJSON
-| [parson](./bench/parson.c)             | https://github.com/kgabis/parson
-| [flatbuffers](./bench/flatbuffers.cxx) | https://github.com/google/flatbuffers
+| [LJSON](./bench/ljson.c)               | https://github.com/lengjingzju/json
+| [RapidJSON](./bench/rapidjson.cxx)     | https://github.com/Tencent/rapidjson/
+| [cJSON](./bench/cjson.c)               | https://github.com/DaveGamble/cJSON
+| [Parson](./bench/parson.c)             | https://github.com/kgabis/parson
+| [FlatBuffers](./bench/flatbuffers.cxx) | https://github.com/google/flatbuffers
