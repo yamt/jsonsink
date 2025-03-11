@@ -69,5 +69,5 @@ test_parson(unsigned int n, const double *data_double,
 void
 run_bench(void)
 {
-        bench("parson", test_parson);
+        bench("Parson", test_parson);
 }
