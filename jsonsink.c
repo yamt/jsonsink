@@ -46,6 +46,9 @@ static void *
 reserve_buffer(struct jsonsink *s, size_t len)
 {
         JSONSINK_ASSERT(s->reserved == 0);
+#if defined(JSONSINK_ENABLE_ASSERTIONS)
+        s->reserved = len;
+#endif
         size_t newbufpos = s->bufpos + len;
         if (newbufpos > s->buflen) {
                 if (s->flush != NULL) {
@@ -56,9 +59,6 @@ reserve_buffer(struct jsonsink *s, size_t len)
                         return NULL;
                 }
         }
-#if defined(JSONSINK_ENABLE_ASSERTIONS)
-        s->reserved = len;
-#endif
         return (char *)s->buf + s->bufpos;
 }
 
