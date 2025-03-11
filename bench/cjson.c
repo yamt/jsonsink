@@ -62,5 +62,5 @@ test_cjson(unsigned int n, const double *data_double, const uint32_t *data_u32)
 void
 run_bench(void)
 {
-        bench("cjson", test_cjson);
+        bench("cJSON", test_cjson);
 }

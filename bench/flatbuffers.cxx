@@ -60,5 +60,5 @@ test_flatbuffers(unsigned int n, const double *data_double,
 void
 run_bench(void)
 {
-        bench("flatbuffers", test_flatbuffers);
+        bench("FlatBuffers", test_flatbuffers);
 }
