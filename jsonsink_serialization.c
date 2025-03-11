@@ -67,7 +67,12 @@ jsonsink_add_double(struct jsonsink *s, double v)
 {
         JSONSINK_ASSERT(!isnan(v));
         JSONSINK_ASSERT(!isinf(v));
-        const size_t maxlen = 64;
+        /*
+         * the maximum length of the scientific notation of IEEE 754 double
+         * is 23. however, we use a bit larger buffer here because it's unclear
+         * if snprintf always produce the shortest representation.
+         */
+        const size_t maxlen = 32;
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = snprintf(dest, dest != NULL ? maxlen : 0, "%1.17g", v);
         if (ret < 0) {

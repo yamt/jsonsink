@@ -71,7 +71,11 @@ jsonsink_add_double(struct jsonsink *s, double v)
 {
         JSONSINK_ASSERT(!isnan(v));
         JSONSINK_ASSERT(!isinf(v));
-        const size_t maxlen = 64;
+        /*
+         * the maximum length of the scientific notation of IEEE 754 double
+         * is 23.
+         */
+        const size_t maxlen = 23 + 1;
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_dtoa(v, dest != NULL ? dest : tmp);
