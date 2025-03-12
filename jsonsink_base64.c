@@ -179,9 +179,12 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
         JSONSINK_ASSERT(cp <= ep);
         const size_t maxchunksize = 64 / 4 * 3;
 
+        /*
+         * REVISIT: maybe we can add extra spaces here to make the
+         * base64 output buffer better aligned.
+         */
         jsonsink_value_start(s);
         jsonsink_add_fragment(s, "\"", 1);
-
         while (cp < ep) {
                 size_t len = ep - cp;
                 if (len > maxchunksize) {
@@ -196,7 +199,6 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
                 jsonsink_commit_buffer(s, bsz);
                 cp += len;
         }
-
         jsonsink_add_fragment(s, "\"", 1);
         jsonsink_value_end(s);
 }
