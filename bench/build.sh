@@ -59,6 +59,15 @@ ljson.c \
 ${LJSON}/jnum.c \
 ${LJSON}/json.c
 
+${CC} \
+-o ljson_dom \
+-I ${LJSON} \
+bench.c \
+rng.c \
+ljson_dom.c \
+${LJSON}/jnum.c \
+${LJSON}/json.c
+
 RAPIDJSON=deps/rapidjson/include
 ${CXX} \
 -o rapidjson \
