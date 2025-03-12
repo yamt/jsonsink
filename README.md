@@ -34,7 +34,7 @@ A small and fast JSON producer written in C.
     among implementations because of different string representations of
     numbers.)
 
-    In case of `flatbuffers`, it generates 1696 bytes binary data.
+    In case of `FlatBuffers`, it generates 1696 bytes binary data.
 
 * `peak heap usage`
 
@@ -57,8 +57,10 @@ A small and fast JSON producer written in C.
   it seems that this benchmark ended up with measuring the performance
   of the conversion from binary numbers to strings. (itoa/dtoa)
 
-  * `jsonsink+snprintf`, `Parson`, and `snprintf` use libc snprintf for
-  the conversion.
+  * `jsonsink+snprintf`, `cJSON`, `Parson`, and `snprintf` use libc snprintf for
+    the conversion. They typically uses "%1.17g" printf format for double.
+    `cJSON` uses "%1.15g" if it's enough to maintain round-trip conversions for
+    the value and otherwise falls back to "%1.17g".
 
   * `jsonsink+jnum`, `RapidJSON`, and `LJSON` use more performant
     implementations of the conversion.
@@ -87,10 +89,12 @@ A small and fast JSON producer written in C.
   The serialized object contains the equivalent of the JSON ones.
   (See its [schema](./bench/test.fbs).)
 
-* `cJSON` and `Parson` are not fair to compare directly because they use DOM-based apis.
+* `LJSON DOM`, `cJSON`, `Parson` are not fair to compare directly because they
+  use DOM-based apis. They are expected to use more memory to maintain edit-able
+  in-core representation of objects.
 
 * `snprintf` is cheating a bit by using the apriori knowledge of
-  the necessary buffer size and using a large enough static buffer.
+  the necessary buffer size and using a large enough (4KB) static buffer.
 
 ### Benchmark code
 
