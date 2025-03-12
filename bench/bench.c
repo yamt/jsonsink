@@ -112,8 +112,12 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
                  * getting the baseline of heap alloctaions.
                  */
                 fn(ndata, data_double, data_u32);
-                base = stat->allocated_bytes;      /* baseline */
-                stat->peak_allocated_bytes = base; /* reset */
+                base = stat->allocated_bytes; /* baseline */
+                /* reset */
+                stat->peak_allocated_bytes = base;
+                stat->nalloc = 0;
+                stat->nresize = 0;
+                stat->nfree = 0;
         }
 
         ret = clock_gettime(cid, &start);
@@ -133,6 +137,9 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
         double cps = n / (end_sec - start_sec);
         if (!test_run) {
+                uint64_t nalloc = 0;
+                uint64_t nresize = 0;
+                uint64_t nfree = 0;
                 if (stat != NULL) {
                         peak = stat->peak_allocated_bytes;
                         size_t now = stat->allocated_bytes;
@@ -140,8 +147,12 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
                                 fprintf(stderr, "memory leak? %zu != %zu\n",
                                         now, base);
                         }
+                        nalloc = stat->nalloc;
+                        nresize = stat->nresize;
+                        nfree = stat->nfree;
                 }
-                printf("%s, %g, %zu\n", label, cps, peak - base);
+                printf("%s, %g, %zu, %" PRIu64 ", %" PRIu64 ", %" PRIu64 "\n",
+                       label, cps, peak - base, nalloc, nresize, nfree);
         }
 }
 

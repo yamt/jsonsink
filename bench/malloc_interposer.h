@@ -25,10 +25,14 @@
  */
 
 #include <stddef.h>
+#include <stdint.h>
 
 struct malloc_stat {
         size_t allocated_bytes;
         size_t peak_allocated_bytes;
+        uint64_t nalloc;
+        uint64_t nresize;
+        uint64_t nfree;
 };
 
 #if !defined(MALLOC_INTERPOSER)

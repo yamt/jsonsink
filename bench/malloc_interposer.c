@@ -55,6 +55,7 @@ _malloc(size_t sz)
         if (p != NULL) {
                 malloc_stat.allocated_bytes += malloc_size(p);
                 update_peak();
+                malloc_stat.nalloc++;
         }
         return p;
 }
@@ -66,6 +67,7 @@ _calloc(size_t count, size_t sz)
         if (p != NULL) {
                 malloc_stat.allocated_bytes += malloc_size(p);
                 update_peak();
+                malloc_stat.nalloc++;
         }
         return p;
 }
@@ -73,6 +75,13 @@ _calloc(size_t count, size_t sz)
 void *
 _realloc(void *p, size_t sz)
 {
+        if (p == NULL) {
+                malloc_stat.nalloc++;
+        } else if (sz == 0) {
+                malloc_stat.nfree++;
+        } else {
+                malloc_stat.nresize++;
+        }
         size_t osz = 0;
         if (p != NULL) {
                 osz = malloc_size(p);
@@ -89,6 +98,13 @@ _realloc(void *p, size_t sz)
 void *
 _reallocf(void *p, size_t sz)
 {
+        if (p == NULL) {
+                malloc_stat.nalloc++;
+        } else if (sz == 0) {
+                malloc_stat.nfree++;
+        } else {
+                malloc_stat.nresize++;
+        }
         if (p != NULL) {
                 malloc_stat.allocated_bytes -= malloc_size(p);
         }
@@ -106,6 +122,7 @@ _aligned_alloc(size_t alignment, size_t sz)
         void *p = aligned_alloc(alignment, sz);
         if (p != NULL) {
                 malloc_stat.allocated_bytes += malloc_size(p);
+                malloc_stat.nalloc++;
                 update_peak();
         }
         return p;
@@ -116,6 +133,7 @@ _free(void *p)
 {
         if (p != NULL) {
                 malloc_stat.allocated_bytes -= malloc_size(p);
+                malloc_stat.nfree++;
         }
         free(p);
 }
