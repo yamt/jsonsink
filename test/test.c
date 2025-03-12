@@ -26,16 +26,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include "jsonsink.h"
-
-static size_t
-do_fwrite(const void *p, size_t sz, size_t nitems, FILE *fp)
-{
-        // return nitems;
-        return fwrite(p, sz, nitems, fp);
-}
 
 struct sink {
         struct jsonsink s;
@@ -46,7 +38,7 @@ static bool
 flush(struct jsonsink *s, size_t needed)
 {
         struct sink *sink = (void *)s;
-        size_t nwritten = do_fwrite(s->buf, 1, s->bufpos, sink->fp);
+        size_t nwritten = fwrite(s->buf, 1, s->bufpos, sink->fp);
         if (nwritten != s->bufpos) {
                 return false;
         }
@@ -165,123 +157,7 @@ test_with_static_buffer(void)
 }
 
 int
-test_with_malloc(void)
-{
-        struct jsonsink s0;
-        struct jsonsink *s = &s0;
-        int ret = 0;
-        jsonsink_init(s);
-        build(s);
-        int error = jsonsink_error(s);
-        if (error != JSONSINK_ERROR_NO_BUFFER_SPACE) {
-                printf("jsonsink error: %d\n", error);
-                return 1;
-        }
-        size_t sz = jsonsink_size(s);
-        void *buf = malloc(sz);
-        if (buf == NULL) {
-                printf("malloc failure\n");
-                return 1;
-        }
-        jsonsink_init(s);
-        jsonsink_set_buffer(s, buf, sz);
-        build(s);
-        error = jsonsink_error(s);
-        if (error != 0) {
-                printf("jsonsink error: %d\n", error);
-                ret = 1;
-                goto out;
-        }
-        if (sz != jsonsink_size(s)) {
-                printf("unexpected size: %zu != %zu\n", sz, jsonsink_size(s));
-                ret = 1;
-                goto out;
-        }
-        if (do_fwrite(buf, 1, sz, stdout) != sz) {
-                printf("fwrite error\n");
-                ret = 1;
-                goto out;
-        }
-out:
-        free(buf);
-        return ret;
-}
-
-static bool
-realloc_flush(struct jsonsink *s, size_t needed)
-{
-        size_t newsize = s->bufpos + needed;
-        void *p = realloc(s->buf, newsize);
-        if (p == NULL) {
-                return false;
-        }
-        s->buf = p;
-        s->buflen = newsize;
-        return true;
-}
-
-int
-test_with_realloc(void)
-{
-        struct jsonsink s0;
-        struct jsonsink *s = &s0;
-        int ret = 0;
-        jsonsink_init(s);
-        s->flush = realloc_flush;
-        build(s);
-        int error = jsonsink_error(s);
-        if (error != 0) {
-                printf("jsonsink error: %d\n", error);
-                ret = 1;
-                goto out;
-        }
-        if (do_fwrite(s->buf, 1, s->bufpos, stdout) != s->bufpos) {
-                printf("fwrite error\n");
-                ret = 1;
-                goto out;
-        }
-out:
-        free(s->buf);
-        return ret;
-}
-
-void
-bench(const char *label, int (*fn)(void))
-{
-        clockid_t cid = CLOCK_MONOTONIC;
-        struct timespec start;
-        struct timespec end;
-        unsigned int i;
-        unsigned int n = 100000;
-        int ret;
-        ret = clock_gettime(cid, &start);
-        if (ret != 0) {
-                fprintf(stderr, "clock_gettime failed\n");
-                exit(1);
-        }
-        for (i = 0; i < n; i++) {
-                fn();
-        }
-        ret = clock_gettime(cid, &end);
-        if (ret != 0) {
-                fprintf(stderr, "clock_gettime failed\n");
-                exit(1);
-        }
-        double start_sec = start.tv_sec * 1.0 + start.tv_nsec / 1000000000.0;
-        double end_sec = end.tv_sec * 1.0 + end.tv_nsec / 1000000000.0;
-        double cps = n / (end_sec - start_sec);
-        printf("%s: %g\n", label, cps);
-}
-
-int
 main(int argc, char **argv)
 {
-#if 0
-        bench("test_with_static_buffer", test_with_static_buffer);
-        bench("test_with_malloc", test_with_malloc);
-        bench("test_with_realloc", test_with_realloc);
-#endif
         test_with_static_buffer();
-        // test_with_malloc();
-        // test_with_realloc();
 }
