@@ -1,12 +1,13 @@
-jsonsink+snprintf (static buffer), 15533.1, 0
-jsonsink+snprintf (malloc), 7811.55, 3584
-jsonsink+snprintf (realloc), 15084.6, 4608
-jsonsink+jnum (static buffer), 186746, 0
-jsonsink+jnum (malloc), 107588, 3072
-jsonsink+jnum (realloc), 150044, 3584
-snprintf, 16234.1, 0
-ljson sax, 137707, 3808
-rapidjson writer, 90977.1, 3616
-cjson, 8440.47, 20112
-parson, 3835.67, 36800
-flatbuffers, 402303, 4224
+jsonsink+snprintf (static buffer), 15376.3, 0, 0, 0, 0
+jsonsink+snprintf (malloc), 7837.24, 3584, 100000, 0, 100000
+jsonsink+snprintf (realloc), 15050.6, 4096, 100000, 1300000, 100000
+jsonsink+jnum (static buffer), 203338, 0, 0, 0, 0
+jsonsink+jnum (malloc), 106020, 3072, 100000, 0, 100000
+jsonsink+jnum (realloc), 146821, 3584, 100000, 1300000, 100000
+snprintf, 16179.4, 0, 0, 0, 0
+LJSON SAX, 134207, 3808, 300000, 400000, 300000
+LJSON DOM, 128198, 49376, 800000, 100000, 800000
+RapidJSON Writer, 71976.2, 3616, 400000, 600000, 400000
+cJSON, 8284.76, 20112, 29200000, 500000, 29200000
+Parson, 3864.56, 36800, 55700000, 0, 55700000
+FlatBuffers, 396980, 4224, 900000, 0, 900000
