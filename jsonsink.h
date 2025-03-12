@@ -320,6 +320,19 @@ void jsonsink_add_double(struct jsonsink *s, double v);
 void jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz);
 
 /**************************************************************************
+ * base64
+ *
+ * implementation: jsonsink_base64.c
+ **************************************************************************/
+
+/*
+ * jsonsink_add_binary_base64: add a byte array as a JSON string with base64
+ * encoding
+ */
+
+void jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz);
+
+/**************************************************************************
  * debug stuff
  **************************************************************************/
 
