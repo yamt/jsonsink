@@ -310,7 +310,7 @@ void jsonsink_add_double(struct jsonsink *s, double v);
  *
  * the input should be a valid utf-8 sequence.
  *   - it should not contain surrogate halves.
- *   - it CAN contain a NUL. (\u0000)
+ *   - it CAN contain NUL characters. (\u0000)
  * it's users' responsibility to pass a valid utf-8 string.
  * the library doesn't perform any validations.
  *
