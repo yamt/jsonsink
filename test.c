@@ -102,6 +102,18 @@ build(struct jsonsink *s)
 
         jsonsink_add_binary_base64(
                 s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
+        jsonsink_add_binary_base64(s,
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789"
+                                   "0123456789",
+                                   100);
 
         uint32_t i;
         for (i = 0; i < 100; i++) {
