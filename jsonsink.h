@@ -276,7 +276,7 @@ void jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
  * - https://github.com/miloyip/dtoa-benchmark
  * - https://github.com/miloyip/itoa-benchmark
  *
- * jsonsink_serialization_jnum.c has an implementation which uses
+ * jsonsink_serialization_jnum.c has an alternative implementation which uses
  * itoa/dtoa functions from LJSON jnum.c, which is usually far faster
  * than snprintf.
  *
@@ -300,7 +300,7 @@ void jsonsink_add_double(struct jsonsink *s, double v);
 /**************************************************************************
  * utf-8 and string escaping
  *
- * implementation: jsonsink_serialization.c
+ * implementation: jsonsink_escape.c
  **************************************************************************/
 
 /*
