@@ -100,6 +100,9 @@ build(struct jsonsink *s)
         /* https://util.unicode.org/UnicodeJsps/character.jsp?a=1F977 */
         jsonsink_add_string(s, JSONSINK_LITERAL("ninja \xf0\x9f\xa5\xb7"));
 
+        jsonsink_add_binary_base64(
+                s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
+
         uint32_t i;
         for (i = 0; i < 100; i++) {
                 jsonsink_object_start(s);
