@@ -106,6 +106,8 @@ struct jsonsink {
  * prefer the slow but small implementation. (eg. system snprintf)
  * others might prefer highly-optimized implementations. it's better to
  * leave the choice to users.
+ *
+ * implementation: jsonsink.c
  **************************************************************************/
 
 /*
