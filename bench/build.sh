@@ -40,6 +40,7 @@ rng.c \
 snprintf.c
 
 # homebrew-installed flatbuffers
+flatc --cpp test.fbs
 FLATBUFFERS=$(brew --prefix flatbuffers)
 ${CXX} \
 -std=c++17 \
