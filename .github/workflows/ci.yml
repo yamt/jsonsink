@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+    tags:
+      - "v*"
+  pull_request:
+    branches: [ "master" ]
+
+concurrency:
+  group: cmake-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-13]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+
+    - name: Install dependencies (macOS)
+      if: startsWith(matrix.os, 'macos-')
+      run: |
+        brew install virtualenv
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Build test
+      run: ./build.sh
+      working-directory: ${{env.builddir}}/test
+
+    - name: Run test
+      run: ./test.sh
+      working-directory: ${{env.builddir}}/test
