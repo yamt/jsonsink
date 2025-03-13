@@ -40,7 +40,7 @@ rng.c \
 snprintf.c
 
 # homebrew-installed flatbuffers
-FLATBUFFERS=/usr/local/opt/flatbuffers
+FLATBUFFERS=$(brew --prefix flatbuffers)
 ${CXX} \
 -std=c++17 \
 -I ${FLATBUFFERS}/include \
