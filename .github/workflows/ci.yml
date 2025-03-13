@@ -17,7 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13]
+        # https://github.com/actions/runner-images
+        os: [macos-13, macos-14, ubuntu-24.04]
 
     runs-on: ${{matrix.os}}
 
