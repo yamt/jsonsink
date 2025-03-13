@@ -74,6 +74,17 @@ commit_buffer(struct jsonsink *s, size_t len)
 }
 
 static void
+write_serialized(struct jsonsink *s, const void *value, size_t len)
+{
+        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
+        void *dest = reserve_buffer(s, len);
+        if (dest != NULL) {
+                memcpy(dest, value, len);
+        }
+        commit_buffer(s, len);
+}
+
+static void
 write_serialized_chunked(struct jsonsink *s, const void *value, size_t len)
 {
         const uint8_t *p = value;
@@ -83,25 +94,10 @@ write_serialized_chunked(struct jsonsink *s, const void *value, size_t len)
                 if (chunksize > maxchunksize) {
                         chunksize = maxchunksize;
                 }
-                void *dest = reserve_buffer(s, chunksize);
-                if (dest != NULL) {
-                        memcpy(dest, p, chunksize);
-                }
-                commit_buffer(s, chunksize);
+                write_serialized(s, p, chunksize);
                 p += chunksize;
                 len -= chunksize;
         } while (len > 0);
-}
-
-static void
-write_serialized(struct jsonsink *s, const void *value, size_t len)
-{
-        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
-        void *dest = reserve_buffer(s, len);
-        if (dest != NULL) {
-                memcpy(dest, value, len);
-        }
-        commit_buffer(s, len);
 }
 
 static void
