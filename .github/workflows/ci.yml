@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  test:
     strategy:
       fail-fast: false
       matrix:
@@ -40,3 +40,31 @@ jobs:
     - name: Run test
       run: ./test.sh
       working-directory: ${{github.workspace}}/test
+
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        # https://github.com/actions/runner-images
+        os: [macos-13, macos-14]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+
+    - name: Install dependencies (macOS)
+      if: startsWith(matrix.os, 'macos-')
+      run: |
+        brew install flatbuffers
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Build benchmark
+      run: ./build.sh
+      working-directory: ${{github.workspace}}/bench
+
+    - name: Run benchmark
+      run: ./run.sh
+      working-directory: ${{github.workspace}}/bench
