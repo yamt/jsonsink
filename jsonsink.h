@@ -35,6 +35,10 @@
 extern "C" {
 #endif
 
+#if !defined(JSONSINK_MAX_RESERVE)
+#define JSONSINK_MAX_RESERVATION 64 /* max reservation size in bytes */
+#endif
+
 #define JSONSINK_OK 0
 #define JSONSINK_ERROR_NO_BUFFER_SPACE 1
 #define JSONSINK_ERROR_FLUSH_FAILED 2

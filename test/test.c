@@ -30,6 +30,18 @@
 
 #include "jsonsink.h"
 
+#define HUNDRED_CHARS                                                         \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"                                                          \
+        "0123456789"
+
 struct sink {
         struct jsonsink s;
         FILE *fp;
@@ -38,7 +50,7 @@ struct sink {
 static bool
 flush(struct jsonsink *s, size_t needed)
 {
-        assert(needed <= 64);
+        assert(needed <= JSONSINK_MAX_RESERVATION);
         struct sink *sink = (void *)s;
         size_t nwritten = fwrite(s->buf, 1, s->bufpos, sink->fp);
         if (nwritten != s->bufpos) {
@@ -96,18 +108,9 @@ build(struct jsonsink *s)
 
         jsonsink_add_binary_base64(
                 s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
-        jsonsink_add_binary_base64(s,
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789"
-                                   "0123456789",
-                                   100);
+        jsonsink_add_binary_base64(s, HUNDRED_CHARS, 100);
+        jsonsink_add_escaped_string(s, HUNDRED_CHARS, 100);
+        jsonsink_add_serialized_value(s, "\"" HUNDRED_CHARS "\"", 100 + 2);
 
         uint32_t i;
         for (i = 0; i < 100; i++) {
@@ -135,6 +138,14 @@ build(struct jsonsink *s)
         }
         jsonsink_array_end(s);
         jsonsink_object_end(s);
+        jsonsink_add_serialized_key(s, "\"" HUNDRED_CHARS "\"", 100 + 2);
+        jsonsink_value_start(s);
+        jsonsink_add_fragment(s, "\"", 1);
+        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
+        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
+        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
+        jsonsink_add_fragment(s, "\"", 1);
+        jsonsink_value_end(s);
         jsonsink_object_end(s);
 }
 
@@ -142,7 +153,7 @@ int
 test_with_static_buffer(void)
 {
         struct sink sink;
-        char buf[64];
+        char buf[JSONSINK_MAX_RESERVATION];
         struct jsonsink *s = &sink.s;
         jsonsink_init(s);
         jsonsink_set_buffer(s, buf, sizeof(buf));

@@ -77,7 +77,7 @@ test_with_static_buffer(unsigned int n, const double *data_double,
                         const uint32_t *data_u32)
 {
         struct sink sink;
-        char buf[64];
+        char buf[JSONSINK_MAX_RESERVATION];
         struct jsonsink *s = &sink.s;
         jsonsink_init(s);
         jsonsink_set_buffer(s, buf, sizeof(buf));

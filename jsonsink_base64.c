@@ -177,7 +177,7 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
         const uint8_t *cp = p;
         const uint8_t *ep = cp + sz;
         JSONSINK_ASSERT(cp <= ep);
-        const size_t maxchunksize = 64 / 4 * 3;
+        const size_t maxchunksize = JSONSINK_MAX_RESERVATION / 4 * 3;
 
         /*
          * REVISIT: maybe we can add extra spaces here to make the
@@ -191,7 +191,7 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
                         len = maxchunksize;
                 }
                 size_t bsz = base64size(len);
-                JSONSINK_ASSERT(bsz <= 64);
+                JSONSINK_ASSERT(bsz <= JSONSINK_MAX_RESERVATION);
                 void *dest = jsonsink_reserve_buffer(s, bsz);
                 if (dest != NULL) {
                         base64encode(cp, len, dest);

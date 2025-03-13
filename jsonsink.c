@@ -45,6 +45,7 @@ set_error(struct jsonsink *s, int error)
 static void *
 reserve_buffer(struct jsonsink *s, size_t len)
 {
+        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
         JSONSINK_ASSERT(s->reserved == 0);
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
         s->reserved = len;
@@ -73,8 +74,29 @@ commit_buffer(struct jsonsink *s, size_t len)
 }
 
 static void
+write_serialized_chunked(struct jsonsink *s, const void *value, size_t len)
+{
+        const uint8_t *p = value;
+        const size_t maxchunksize = JSONSINK_MAX_RESERVATION;
+        do {
+                size_t chunksize = len;
+                if (chunksize > maxchunksize) {
+                        chunksize = maxchunksize;
+                }
+                void *dest = reserve_buffer(s, chunksize);
+                if (dest != NULL) {
+                        memcpy(dest, p, chunksize);
+                }
+                commit_buffer(s, chunksize);
+                p += chunksize;
+                len -= chunksize;
+        } while (len > 0);
+}
+
+static void
 write_serialized(struct jsonsink *s, const void *value, size_t len)
 {
+        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
         void *dest = reserve_buffer(s, len);
         if (dest != NULL) {
                 memcpy(dest, value, len);
@@ -283,7 +305,7 @@ jsonsink_commit_buffer(struct jsonsink *s, size_t len)
 void
 jsonsink_add_fragment(struct jsonsink *s, const char *frag, size_t len)
 {
-        write_serialized(s, frag, len);
+        write_serialized_chunked(s, frag, len);
 }
 
 void
@@ -292,7 +314,7 @@ jsonsink_add_serialized_key(struct jsonsink *s, const char *key, size_t keylen)
         JSONSINK_ASSERT(s->level > 0 && s->is_obj[s->level - 1]);
         JSONSINK_ASSERT(!s->has_key);
         may_write_comma(s);
-        write_serialized(s, key, keylen);
+        write_serialized_chunked(s, key, keylen);
         write_char(s, ':');
         s->need_comma = false;
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
@@ -305,7 +327,7 @@ jsonsink_add_serialized_value(struct jsonsink *s, const char *value,
                               size_t valuelen)
 {
         value_start(s);
-        write_serialized(s, value, valuelen);
+        write_serialized_chunked(s, value, valuelen);
         value_end(s);
 }
 
@@ -315,7 +337,7 @@ jsonsink_add_escaped_string(struct jsonsink *s, const char *value,
 {
         value_start(s);
         write_char(s, '"');
-        write_serialized(s, value, valuelen);
+        write_serialized_chunked(s, value, valuelen);
         write_char(s, '"');
         value_end(s);
 }
