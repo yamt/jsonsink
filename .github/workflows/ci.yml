@@ -34,8 +34,8 @@ jobs:
 
     - name: Build test
       run: ./build.sh
-      working-directory: ${{env.builddir}}/test
+      working-directory: ${{github.workspace}}/test
 
     - name: Run test
       run: ./test.sh
-      working-directory: ${{env.builddir}}/test
+      working-directory: ${{github.workspace}}/test
