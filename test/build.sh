@@ -4,7 +4,7 @@ set -e
 set -x
 
 JSONSINK=..
-cc -g -O2 -flto=full -DJSONSINK_ENABLE_ASSERTIONS \
+cc -g -O2 -DJSONSINK_ENABLE_ASSERTIONS \
 -I ${JSONSINK} \
 -o test \
 test.c \
