@@ -24,6 +24,7 @@
  * SUCH DAMAGE.
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,6 +38,7 @@ struct sink {
 static bool
 flush(struct jsonsink *s, size_t needed)
 {
+        assert(needed <= 64);
         struct sink *sink = (void *)s;
         size_t nwritten = fwrite(s->buf, 1, s->bufpos, sink->fp);
         if (nwritten != s->bufpos) {
