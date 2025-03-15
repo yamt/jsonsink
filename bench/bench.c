@@ -111,7 +111,11 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
                  * them, perform a dry run to populate the cache enough before
                  * getting the baseline of heap alloctaions.
                  */
-                fn(ndata, data_double, data_u32);
+                int error = fn(ndata, data_double, data_u32);
+                if (error) {
+                        fprintf(stderr, "callback failed with %d\n", error);
+                        exit(1);
+                }
                 base = stat->allocated_bytes; /* baseline */
                 /* reset */
                 stat->peak_allocated_bytes = base;
@@ -126,7 +130,11 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
                 exit(1);
         }
         for (i = 0; i < n; i++) {
-                fn(ndata, data_double, data_u32);
+                int error = fn(ndata, data_double, data_u32);
+                if (error) {
+                        fprintf(stderr, "callback failed with %d\n", error);
+                        exit(1);
+                }
         }
         ret = clock_gettime(cid, &end);
         if (ret != 0) {
