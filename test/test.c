@@ -163,7 +163,7 @@ test_with_static_buffer(void)
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
-                printf("jsonsink error: %d\n", error);
+                fprintf(stderr, "jsonsink error: %d\n", error);
                 return 1;
         }
         return 0;

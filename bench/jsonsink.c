@@ -89,7 +89,7 @@ test_with_static_buffer(unsigned int n, const double *data_double,
         jsonsink_flush(s, 0);
         int error = jsonsink_error(s);
         if (error != 0) {
-                printf("jsonsink error: %d\n", error);
+                fprintf(stderr, "jsonsink error: %d\n", error);
                 return 1;
         }
         return 0;
@@ -112,7 +112,7 @@ test_with_malloc(unsigned int n, const double *data_double,
         jsonsink_check(s);
         int error = jsonsink_error(s);
         if (error != JSONSINK_ERROR_NO_BUFFER_SPACE) {
-                printf("jsonsink error: %d\n", error);
+                fprintf(stderr, "jsonsink error: %d\n", error);
                 return 1;
         }
 
@@ -123,7 +123,7 @@ test_with_malloc(unsigned int n, const double *data_double,
         size_t sz = jsonsink_size(s);
         void *buf = malloc(sz);
         if (buf == NULL) {
-                printf("malloc failure\n");
+                fprintf(stderr, "malloc failure\n");
                 return 1;
         }
 
@@ -136,17 +136,18 @@ test_with_malloc(unsigned int n, const double *data_double,
         build(s, n, data_double, data_u32);
         error = jsonsink_error(s);
         if (error != 0) {
-                printf("jsonsink error: %d\n", error);
+                fprintf(stderr, "jsonsink error: %d\n", error);
                 ret = 1;
                 goto out;
         }
         if (sz != jsonsink_size(s)) {
-                printf("unexpected size: %zu != %zu\n", sz, jsonsink_size(s));
+                fprintf(stderr, "unexpected size: %zu != %zu\n", sz,
+                        jsonsink_size(s));
                 ret = 1;
                 goto out;
         }
         if (do_fwrite(buf, 1, sz, stdout) != sz) {
-                printf("fwrite error\n");
+                fprintf(stderr, "fwrite error\n");
                 ret = 1;
                 goto out;
         }
@@ -189,12 +190,12 @@ test_with_realloc(unsigned int n, const double *data_double,
         jsonsink_check(s);
         int error = jsonsink_error(s);
         if (error != 0) {
-                printf("jsonsink error: %d\n", error);
+                fprintf(stderr, "jsonsink error: %d\n", error);
                 ret = 1;
                 goto out;
         }
         if (do_fwrite(s->buf, 1, s->bufpos, stdout) != s->bufpos) {
-                printf("fwrite error\n");
+                fprintf(stderr, "fwrite error\n");
                 ret = 1;
                 goto out;
         }

@@ -51,7 +51,7 @@ test_flatbuffers(unsigned int n, const double *data_double,
         const void *p = b.GetBufferPointer();
         size_t sz = b.GetSize();
         if (do_fwrite(p, 1, sz, stdout) != sz) {
-                printf("fwrite error\n");
+                fprintf(stderr, "fwrite error\n");
                 return 1;
         }
         return 0;

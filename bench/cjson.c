@@ -52,7 +52,7 @@ test_cjson(unsigned int n, const double *data_double, const uint32_t *data_u32)
         cJSON_Delete(root);
         size_t sz = strlen(p); /* XXX is there a more efficient way? */
         if (do_fwrite(p, 1, sz, stdout) != sz) {
-                printf("fwrite error\n");
+                fprintf(stderr, "fwrite error\n");
                 ret = 1;
         }
         free(p);
