@@ -178,6 +178,7 @@ const void *
 jsonsink_pointer(const struct jsonsink *s)
 {
         JSONSINK_ASSERT(s->error == JSONSINK_OK);
+        jsonsink_check(s);
         return s->buf;
 }
 
@@ -185,6 +186,7 @@ size_t
 jsonsink_size(const struct jsonsink *s)
 {
         JSONSINK_ASSERT(s->error == JSONSINK_OK);
+        jsonsink_check(s);
         return s->bufpos;
 }
 
