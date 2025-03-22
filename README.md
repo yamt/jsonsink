@@ -28,7 +28,7 @@ A small and fast JSON producer written in C.
 
   * Larger is better.
 
-  * It measures the speed to generate JSON objects, an equivalent of
+  * It measures the speed to generate JSON objects equivalent to
     [this](bench/example.json).
     The size of the JSON object is typically 2669 bytes. (It varies a bit
     among implementations because of different string representations of
@@ -58,14 +58,14 @@ A small and fast JSON producer written in C.
   of the conversion from binary numbers to strings. (itoa/dtoa)
 
   * `jsonsink+snprintf`, `cJSON`, `Parson`, and `snprintf` use libc snprintf for
-    the conversion. They typically uses "%1.17g" printf format for double.
-    `cJSON` uses "%1.15g" if it's enough to maintain round-trip conversions for
-    the value and otherwise falls back to "%1.17g".
+    the conversion. They typically use "%1.17g" printf format for double.
+    `cJSON` uses "%1.15g" if it's enough to maintain the round-trip conversion for
+    the specific value and otherwise falls back to "%1.17g".
 
-  * `jsonsink+jnum`, `RapidJSON`, and `LJSON` use more performant
-    implementations of the conversion.
+  * `jsonsink+jnum`, `RapidJSON`, and `LJSON` use more performant implementations
+    of the conversion.
 
-  * `FlatBuffers` is very fast because it doesn't involve the conversions.
+  * `FlatBuffers` is very fast because it doesn't involve the conversion.
 
   * In case you are interested in this area, there are dedicated
     benchmarks out there.
