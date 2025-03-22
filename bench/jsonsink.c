@@ -215,7 +215,7 @@ run_bench(void)
 {
         bench(NAME " (static buffer)", test_with_static_buffer);
         if (!test_run) {
-                bench(NAME " (malloc)", test_with_malloc);
+                bench(NAME " (two pass)", test_with_malloc);
                 bench(NAME " (realloc)", test_with_realloc);
         }
 }
