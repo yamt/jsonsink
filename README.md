@@ -77,7 +77,7 @@ A small and fast JSON producer written in C.
 * `jsonsink (static)` uses a small (64 bytes) static buffer.
   when the buffer gets full, it flushes the buffer.
 
-* `jsonsink (malloc)` uses two-path strategy. It first calculates the
+* `jsonsink (two pass)` uses two-pass strategy. It first calculates the
   size of JSON, allocate the buffer of the size with malloc(), and then
   generate JSON to the buffer. Thus it's expected to be about twice slower
   than `jsonsink (static buffer)`.
