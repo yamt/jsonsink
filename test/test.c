@@ -158,12 +158,12 @@ build(struct jsonsink *s)
         }
         jsonsink_array_end(s);
         jsonsink_object_end(s);
-        jsonsink_add_serialized_key(s, "\"" HUNDRED_CHARS "\"", 100 + 2);
+        jsonsink_add_serialized_key(s, "\"" THOUSAND_CHARS "\"", 1000 + 2);
         jsonsink_value_start(s);
         jsonsink_add_fragment(s, "\"", 1);
-        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
-        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
-        jsonsink_add_fragment(s, HUNDRED_CHARS, 100);
+        jsonsink_add_fragment(s, THOUSAND_CHARS, 1000);
+        jsonsink_add_fragment(s, THOUSAND_CHARS, 1000);
+        jsonsink_add_fragment(s, THOUSAND_CHARS, 1000);
         jsonsink_add_fragment(s, "\"", 1);
         jsonsink_value_end(s);
         jsonsink_object_end(s);
