@@ -41,12 +41,12 @@ calculate_sarrogates(uint32_t code)
         /*
          * https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-3/#G31699
          */
-        JSONSINK_ASSERT(code >= 0x10000);
+        JSONSINK_ASSUME(code >= 0x10000);
         uint16_t w = ((code >> 16) & 0x001f) - 1;
         uint16_t high = 0xd800 | (w << 6) | ((code & 0xffff) >> 10);
         uint16_t low = 0xdc00 | (code & 0x3ff);
-        JSONSINK_ASSERT(0xd800 <= high && high <= 0xdbff);
-        JSONSINK_ASSERT(0xdc00 <= low && low <= 0xdfff);
+        JSONSINK_ASSUME(0xd800 <= high && high <= 0xdbff);
+        JSONSINK_ASSUME(0xdc00 <= low && low <= 0xdfff);
         return (struct surrogates){high, low};
 }
 
@@ -58,7 +58,7 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
          */
         const uint8_t *p = (const void *)cp;
         const uint8_t *ep = p + sz;
-        JSONSINK_ASSERT(p <= ep);
+        JSONSINK_ASSUME(p <= ep);
 
         jsonsink_value_start(s);
         jsonsink_add_fragment(s, "\"", 1);
@@ -68,49 +68,49 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                  */
                 uint8_t u8 = *p++;
                 /* these bytes never appear in a valid utf-8 */
-                JSONSINK_ASSERT(u8 != 0xc0 && u8 != 0xc1 && u8 < 0xf5);
+                JSONSINK_ASSUME(u8 != 0xc0 && u8 != 0xc1 && u8 < 0xf5);
                 /* these bytes never appear at the beginning of a charater */
-                JSONSINK_ASSERT(u8 < 0x80 || 0xbf < u8);
+                JSONSINK_ASSUME(u8 < 0x80 || 0xbf < u8);
                 uint32_t code;
                 if (u8 < 0x80) {
                         /* 1 byte */
                         code = u8 & 0x7f;
                 } else if (u8 < 0xe0) {
                         /* 2 byte */
-                        JSONSINK_ASSERT(p + 1 <= ep);
-                        JSONSINK_ASSERT((u8 & 0xe0) == 0xc0);
-                        JSONSINK_ASSERT((u8 & 0xe0) == 0xc0);
-                        JSONSINK_ASSERT((p[0] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME(p + 1 <= ep);
+                        JSONSINK_ASSUME((u8 & 0xe0) == 0xc0);
+                        JSONSINK_ASSUME((u8 & 0xe0) == 0xc0);
+                        JSONSINK_ASSUME((p[0] & 0xc0) == 0x80);
                         code = ((u8 & 0x1f) << 6) | ((*p++) & 0x3f);
                         /* reject overlog encodings */
-                        JSONSINK_ASSERT(0x80 <= code && code <= 0x7ff);
+                        JSONSINK_ASSUME(0x80 <= code && code <= 0x7ff);
                 } else if (u8 < 0xf0) {
                         /* 3 byte */
-                        JSONSINK_ASSERT(p + 2 <= ep);
-                        JSONSINK_ASSERT((u8 & 0xf0) == 0xe0);
-                        JSONSINK_ASSERT((p[0] & 0xc0) == 0x80);
-                        JSONSINK_ASSERT((p[1] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME(p + 2 <= ep);
+                        JSONSINK_ASSUME((u8 & 0xf0) == 0xe0);
+                        JSONSINK_ASSUME((p[0] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME((p[1] & 0xc0) == 0x80);
                         code = ((u8 & 0xf) << 12) | ((p[0] & 0x3f) << 6) |
                                (p[1] & 0x3f);
                         /* reject overlog encodings */
-                        JSONSINK_ASSERT(0x800 <= code && code <= 0xffff);
+                        JSONSINK_ASSUME(0x800 <= code && code <= 0xffff);
                         p += 2;
                 } else {
                         /* 4 byte */
-                        JSONSINK_ASSERT(p + 3 <= ep);
-                        JSONSINK_ASSERT((u8 & 0xf8) == 0xf0);
-                        JSONSINK_ASSERT((p[0] & 0xc0) == 0x80);
-                        JSONSINK_ASSERT((p[1] & 0xc0) == 0x80);
-                        JSONSINK_ASSERT((p[2] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME(p + 3 <= ep);
+                        JSONSINK_ASSUME((u8 & 0xf8) == 0xf0);
+                        JSONSINK_ASSUME((p[0] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME((p[1] & 0xc0) == 0x80);
+                        JSONSINK_ASSUME((p[2] & 0xc0) == 0x80);
                         code = ((u8 & 0x3) << 18) | ((p[0] & 0x3f) << 12) |
                                ((p[1] & 0x3f) << 6) | ((p[2]) & 0x3f);
                         /* reject overlog encodings */
-                        JSONSINK_ASSERT(0x10000 <= code && code <= 0x10ffff);
+                        JSONSINK_ASSUME(0x10000 <= code && code <= 0x10ffff);
                         p += 3;
                 }
-                JSONSINK_ASSERT(code <= 0x10ffff);
+                JSONSINK_ASSUME(code <= 0x10ffff);
                 /* sarrogate halves should never appear in a utf-8 string */
-                JSONSINK_ASSERT(code < 0xd800 || 0xe000 <= code);
+                JSONSINK_ASSUME(code < 0xd800 || 0xe000 <= code);
 
                 /*
                  * trasnmit the decoded character.
@@ -127,7 +127,7 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                                         dest, len + 1,
                                         "\\u%04" PRIx16 "\\u%04" PRIx16,
                                         sarrogates.high, sarrogates.low);
-                                JSONSINK_ASSERT(ret == len);
+                                JSONSINK_ASSUME(ret == len);
                         }
                         jsonsink_commit_buffer(s, len);
                 } else if (code == 0x22) {
@@ -143,7 +143,7 @@ jsonsink_add_string(struct jsonsink *s, const char *cp, size_t sz)
                         if (dest != NULL) {
                                 int ret = snprintf(dest, len + 1, "\\u%04x",
                                                    code);
-                                JSONSINK_ASSERT(ret == len);
+                                JSONSINK_ASSUME(ret == len);
                         }
                         jsonsink_commit_buffer(s, len);
                 } else {

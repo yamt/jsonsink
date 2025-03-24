@@ -44,7 +44,7 @@ jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        JSONSINK_ASSERT(ret < maxlen);
+        JSONSINK_ASSUME(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 
@@ -58,7 +58,7 @@ jsonsink_add_int32(struct jsonsink *s, int32_t v)
                 jsonsink_set_error(s, JSONSINK_ERROR_SERIALIZATION);
                 return;
         }
-        JSONSINK_ASSERT(ret < maxlen);
+        JSONSINK_ASSUME(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 

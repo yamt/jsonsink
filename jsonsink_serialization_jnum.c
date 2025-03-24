@@ -51,7 +51,7 @@ jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_ltoa(v, dest != NULL ? dest : tmp);
-        JSONSINK_ASSERT(ret < maxlen);
+        JSONSINK_ASSUME(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 
@@ -62,7 +62,7 @@ jsonsink_add_int32(struct jsonsink *s, int32_t v)
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_itoa(v, dest != NULL ? dest : tmp);
-        JSONSINK_ASSERT(ret < maxlen);
+        JSONSINK_ASSUME(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }
 
@@ -79,6 +79,6 @@ jsonsink_add_double(struct jsonsink *s, double v)
         char tmp[maxlen];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_dtoa(v, dest != NULL ? dest : tmp);
-        JSONSINK_ASSERT(ret < maxlen);
+        JSONSINK_ASSUME(ret < maxlen);
         jsonsink_add_serialized_value_commit(s, ret);
 }

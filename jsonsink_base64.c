@@ -30,14 +30,6 @@
 
 #include "jsonsink.h"
 
-#if !defined(__has_builtin)
-#define __has_builtin(a) 0
-#endif
-
-#if !__has_builtin(__builtin_assume)
-#define __builtin_assume(cond)
-#endif
-
 #if !defined(LITTLE_ENDIAN)
 #if defined(__LITTLE_ENDIAN__) || (defined(__BYTE_ORDER__) &&                 \
                                    __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
@@ -56,12 +48,12 @@
 #error endian is not known
 #endif
 
-#define BASE64_ASSERT(cond) JSONSINK_ASSERT(cond)
+#define BASE64_ASSUME(cond) JSONSINK_ASSUME(cond)
 
 static uint8_t
 conv_to_char(uint8_t x)
 {
-        BASE64_ASSERT(x < 64);
+        BASE64_ASSUME(x < 64);
         static const char table[64] = {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
@@ -111,7 +103,7 @@ convert(uint32_t x)
 static uint32_t
 pad(uint32_t x, unsigned int srclen)
 {
-        BASE64_ASSERT(srclen > 0 && srclen <= 3);
+        BASE64_ASSUME(srclen > 0 && srclen <= 3);
         union {
                 uint32_t u32;
                 uint8_t u8[4];
@@ -129,7 +121,7 @@ pad(uint32_t x, unsigned int srclen)
 static void
 enc3(const uint8_t p[3], char dst[4], unsigned int srclen)
 {
-        BASE64_ASSERT(srclen > 0 && srclen <= 3);
+        BASE64_ASSUME(srclen > 0 && srclen <= 3);
 
         uint32_t x = loadbe(p);
         x = expand(x);
@@ -145,7 +137,7 @@ static size_t
 base64size(size_t srclen)
 {
         size_t bsz = (srclen + 2) / 3 * 4;
-        BASE64_ASSERT(srclen / 3 == bsz / 4 || srclen / 3 + 1 == bsz / 4);
+        BASE64_ASSUME(srclen / 3 == bsz / 4 || srclen / 3 + 1 == bsz / 4);
         return bsz;
 }
 
@@ -162,7 +154,7 @@ base64encode(const void *restrict src, size_t srclen, char *restrict dst)
                 dst += 4;
         }
         size_t tail = srclen - n * 3;
-        BASE64_ASSERT(0 <= tail && tail < 3);
+        BASE64_ASSUME(0 <= tail && tail < 3);
         if (tail > 0) {
                 uint8_t tmp[3];
                 memset(tmp, 0, sizeof(tmp));
@@ -176,7 +168,7 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
 {
         const uint8_t *cp = p;
         const uint8_t *ep = cp + sz;
-        JSONSINK_ASSERT(cp <= ep);
+        JSONSINK_ASSUME(cp <= ep);
         const size_t maxchunksize = JSONSINK_MAX_RESERVATION / 4 * 3;
 
         /*
@@ -191,7 +183,7 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
                         len = maxchunksize;
                 }
                 size_t bsz = base64size(len);
-                JSONSINK_ASSERT(bsz <= JSONSINK_MAX_RESERVATION);
+                JSONSINK_ASSUME(bsz <= JSONSINK_MAX_RESERVATION);
                 void *dest = jsonsink_reserve_buffer(s, bsz);
                 if (dest != NULL) {
                         base64encode(cp, len, dest);

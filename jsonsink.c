@@ -37,15 +37,15 @@ set_error(struct jsonsink *s, int error)
          * this function is not expected to be used to set
          * JSONSINK_ERROR_NO_BUFFER_SPACE. it's handled by jsonsink_error().
          */
-        JSONSINK_ASSERT(error != JSONSINK_OK);
-        JSONSINK_ASSERT(error != JSONSINK_ERROR_NO_BUFFER_SPACE);
+        JSONSINK_ASSUME(error != JSONSINK_OK);
+        JSONSINK_ASSUME(error != JSONSINK_ERROR_NO_BUFFER_SPACE);
         s->error = error;
 }
 
 static void *
 reserve_buffer(struct jsonsink *s, size_t len)
 {
-        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
+        JSONSINK_ASSUME(len <= JSONSINK_MAX_RESERVATION);
         JSONSINK_ASSERT(s->reserved == 0);
 #if defined(JSONSINK_ENABLE_ASSERTIONS)
         s->reserved = len;
@@ -76,7 +76,7 @@ commit_buffer(struct jsonsink *s, size_t len)
 static void
 write_serialized(struct jsonsink *s, const void *value, size_t len)
 {
-        JSONSINK_ASSERT(len <= JSONSINK_MAX_RESERVATION);
+        JSONSINK_ASSUME(len <= JSONSINK_MAX_RESERVATION);
         void *dest = reserve_buffer(s, len);
         if (dest != NULL) {
                 memcpy(dest, value, len);
@@ -152,7 +152,7 @@ jsonsink_flush(struct jsonsink *s, size_t needed)
                 set_error(s, JSONSINK_ERROR_FLUSH_FAILED);
                 return false;
         }
-        JSONSINK_ASSERT(s->bufpos + needed <= s->buflen);
+        JSONSINK_ASSUME(s->bufpos + needed <= s->buflen);
         return true;
 }
 
@@ -177,7 +177,7 @@ jsonsink_set_error(struct jsonsink *s, int error)
 const void *
 jsonsink_pointer(const struct jsonsink *s)
 {
-        JSONSINK_ASSERT(s->error == JSONSINK_OK);
+        JSONSINK_ASSUME(s->error == JSONSINK_OK);
         jsonsink_check(s);
         return s->buf;
 }
@@ -185,7 +185,7 @@ jsonsink_pointer(const struct jsonsink *s)
 size_t
 jsonsink_size(const struct jsonsink *s)
 {
-        JSONSINK_ASSERT(s->error == JSONSINK_OK);
+        JSONSINK_ASSUME(s->error == JSONSINK_OK);
         jsonsink_check(s);
         return s->bufpos;
 }

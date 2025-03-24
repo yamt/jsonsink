@@ -342,6 +342,14 @@ void jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz);
  * debug stuff
  **************************************************************************/
 
+#if !defined(__has_builtin)
+#define __has_builtin(a) 0
+#endif
+
+#if !__has_builtin(__builtin_assume)
+#define __builtin_assume(cond)
+#endif
+
 /*
  * JSONSINK_ENABLE_ASSERTIONS enables extra sanity checks in the library.
  * the main purpose is to detect typical api usage errors like
@@ -367,9 +375,11 @@ void jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz);
                         __builtin_trap();                                     \
                 }                                                             \
         } while (0)
+#define JSONSINK_ASSUME(cond) JSONSINK_ASSERT(cond)
 void jsonsink_check(const struct jsonsink *s);
 #else /* defined(JSONSINK_ENABLE_ASSERTIONS) */
 #define JSONSINK_ASSERT(cond)
+#define JSONSINK_ASSUME(cond) __builtin_assume(cond)
 #define jsonsink_check(s)
 #endif /* defined(JSONSINK_ENABLE_ASSERTIONS) */
 
