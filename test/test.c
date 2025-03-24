@@ -112,6 +112,12 @@ build(struct jsonsink *s)
         jsonsink_add_escaped_string(s, HUNDRED_CHARS, 100);
         jsonsink_add_serialized_value(s, "\"" HUNDRED_CHARS "\"", 100 + 2);
 
+        /* empty strings */
+        jsonsink_add_string(s, NULL, 0);
+        jsonsink_add_escaped_string(s, NULL, 0);
+        jsonsink_add_binary_base64(s, NULL, 0);
+        jsonsink_add_serialized_value(s, "\"\"", 2);
+
         uint32_t i;
         for (i = 0; i < 100; i++) {
                 jsonsink_object_start(s);
