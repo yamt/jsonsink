@@ -42,6 +42,18 @@
         "0123456789"                                                          \
         "0123456789"
 
+#define THOUSAND_CHARS                                                        \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS                                                         \
+        HUNDRED_CHARS
+
 struct sink {
         struct jsonsink s;
         FILE *fp;
@@ -108,9 +120,11 @@ build(struct jsonsink *s)
 
         jsonsink_add_binary_base64(
                 s, JSONSINK_LITERAL("nul \0 quote \" backslash \\"));
-        jsonsink_add_binary_base64(s, HUNDRED_CHARS, 100);
-        jsonsink_add_escaped_string(s, HUNDRED_CHARS, 100);
-        jsonsink_add_serialized_value(s, "\"" HUNDRED_CHARS "\"", 100 + 2);
+
+        /* big strings */
+        jsonsink_add_binary_base64(s, THOUSAND_CHARS, 1000);
+        jsonsink_add_escaped_string(s, THOUSAND_CHARS, 1000);
+        jsonsink_add_serialized_value(s, "\"" THOUSAND_CHARS "\"", 1000 + 2);
 
         /* empty strings */
         jsonsink_add_string(s, NULL, 0);
