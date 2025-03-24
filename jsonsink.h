@@ -310,7 +310,7 @@ void jsonsink_add_double(struct jsonsink *s, double v);
  **************************************************************************/
 
 /*
- * jsonsink_add_string: add an utf-8 string value.
+ * jsonsink_add_string: add a utf-8 string value.
  *
  * this function performs necessary escaping.
  *
