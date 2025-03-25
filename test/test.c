@@ -166,6 +166,11 @@ build(struct jsonsink *s)
         jsonsink_add_fragment(s, THOUSAND_CHARS, 1000);
         jsonsink_add_fragment(s, "\"", 1);
         jsonsink_value_end(s);
+
+        /* empty key */
+        JSONSINK_ADD_LITERAL_KEY(s, "");
+        JSONSINK_ADD_LITERAL_STRING(s, "empty key");
+
         jsonsink_object_end(s);
 }
 
