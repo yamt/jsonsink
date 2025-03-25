@@ -63,7 +63,7 @@ static bool
 flush(struct jsonsink *s, size_t needed)
 {
         assert(needed <= JSONSINK_MAX_RESERVATION);
-        struct sink *sink = (void *)s;
+        const struct sink *sink = (void *)s;
         size_t nwritten = fwrite(s->buf, 1, s->bufpos, sink->fp);
         if (nwritten != s->bufpos) {
                 return false;
