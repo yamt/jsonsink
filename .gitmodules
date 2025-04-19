@@ -10,3 +10,6 @@
 [submodule "bench/deps/cJSON"]
 	path = bench/deps/cJSON
 	url = https://github.com/DaveGamble/cJSON
+[submodule "bench/deps/fpconv"]
+	path = bench/deps/fpconv
+	url = https://github.com/night-shift/fpconv
