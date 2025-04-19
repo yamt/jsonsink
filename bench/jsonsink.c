@@ -206,6 +206,8 @@ out:
 
 #if defined(JSONSINK_BENCH_JNUM)
 #define NAME "jsonsink+jnum"
+#elif defined(JSONSINK_BENCH_FPCONV)
+#define NAME "jsonsink+fpconv"
 #else
 #define NAME "jsonsink+snprintf"
 #endif

@@ -1,9 +1,9 @@
-TESTS="jsonsink jsonsink-jnum snprintf ljson ljson_dom rapidjson cjson parson"
+TESTS="jsonsink jsonsink-jnum jsonsink-fpconv snprintf ljson ljson_dom rapidjson cjson parson"
 
 # quick test
 printf "%13.13s:0b4864bde11d7f8893994605eca96bfc928337d3b04f1a08fcf8a515ca08d4ac\n" expected >&2
 for t in $TESTS; do
-	printf "%13.13s:" $t >&2
+	printf "%15.15s:" $t >&2
 	./$t --test | python -m json.tool | openssl sha256 >&2
 done
 
@@ -11,14 +11,14 @@ done
 TMP=$(mktemp -d)
 ./flatbuffers --test > $TMP/test.bin
 flatc --raw-binary --json --strict-json test.fbs -- $TMP/test.bin
-printf "%13.13s:" flatbuffers >&2
+printf "%15.15s:" flatbuffers >&2
 python -m json.tool test.json | openssl sha256 >& 2
 
 for t in $TESTS; do
-	printf "%13.13s:" $t >&2
+	printf "%15.15s:" $t >&2
 	./$t --test | wc -c >&2
 done
-printf "%13.13s:" flatbuffers >&2
+printf "%15.15s:" flatbuffers >&2
 ./flatbuffers --test | wc -c >&2
 
 # benchmark

@@ -33,6 +33,19 @@ ${JSONSINK}/jsonsink.c \
 ${JSONSINK}/jsonsink_serialization_jnum.c \
 ${LJSON}/jnum.c
 
+FPCONV=deps/fpconv/src
+${CC} \
+-D JSONSINK_BENCH_FPCONV \
+-o jsonsink-fpconv \
+-I ${JSONSINK} \
+-I ${FPCONV} \
+bench.c \
+rng.c \
+jsonsink.c \
+${JSONSINK}/jsonsink.c \
+${JSONSINK}/jsonsink_serialization_fpconv.c \
+${FPCONV}/fpconv.c
+
 ${CC} \
 -o snprintf \
 bench.c \
