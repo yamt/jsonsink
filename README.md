@@ -65,6 +65,9 @@ A small and fast JSON producer written in C.
   * `jsonsink+jnum`, `jsonsink+fpconv`, `RapidJSON`, and `LJSON` use more
     performant implementations of the conversion.
 
+    * [jnum](https://github.com/lengjingzju/json/blob/master/jnum.c)
+    * [fpconv](https://github.com/night-shift/fpconv)
+
   * `FlatBuffers` is very fast because it doesn't involve the conversion.
 
   * In case you are interested in this area, there are dedicated
