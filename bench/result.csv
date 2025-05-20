@@ -1,13 +1,16 @@
-jsonsink+snprintf (static buffer), 15629.4, 0, 0, 0, 0
-jsonsink+snprintf (two pass), 7979.41, 3584, 100000, 0, 100000
-jsonsink+snprintf (realloc), 15258.8, 4096, 100000, 1300000, 100000
-jsonsink+jnum (static buffer), 206043, 0, 0, 0, 0
-jsonsink+jnum (two pass), 106838, 3072, 100000, 0, 100000
-jsonsink+jnum (realloc), 147024, 3584, 100000, 1300000, 100000
-snprintf, 16407.5, 0, 0, 0, 0
-LJSON SAX, 135871, 3808, 300000, 400000, 300000
-LJSON DOM, 127708, 49376, 800000, 100000, 800000
-RapidJSON Writer, 90996.8, 3616, 400000, 600000, 400000
-cJSON, 8478.99, 20112, 29200000, 500000, 29200000
-Parson, 3876.54, 36800, 55700000, 0, 55700000
-FlatBuffers, 412240, 4224, 900000, 0, 900000
+jsonsink+snprintf (static buffer), 14811, 0, 0, 0, 0
+jsonsink+snprintf (two pass), 8026.5, 3584, 100000, 0, 100000
+jsonsink+snprintf (realloc), 15330.9, 4096, 100000, 1300000, 100000
+jsonsink+jnum (static buffer), 202732, 0, 0, 0, 0
+jsonsink+jnum (two pass), 107620, 3072, 100000, 0, 100000
+jsonsink+jnum (realloc), 149742, 3584, 100000, 1300000, 100000
+jsonsink+fpconv (static buffer), 54870.6, 0, 0, 0, 0
+jsonsink+fpconv (two pass), 27884.4, 3072, 100000, 0, 100000
+jsonsink+fpconv (realloc), 50574.9, 3584, 100000, 1200000, 100000
+snprintf, 17228.5, 0, 0, 0, 0
+LJSON SAX, 137141, 3808, 300000, 400000, 300000
+LJSON DOM, 131117, 49376, 800000, 100000, 800000
+RapidJSON Writer, 96069.5, 3616, 400000, 600000, 400000
+cJSON, 8741.49, 20112, 29200000, 500000, 29200000
+Parson, 3894.53, 36800, 55700000, 0, 55700000
+FlatBuffers, 405270, 4224, 900000, 0, 900000
