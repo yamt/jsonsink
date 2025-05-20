@@ -1,7 +1,7 @@
 TESTS="jsonsink jsonsink-jnum jsonsink-fpconv snprintf ljson ljson_dom rapidjson cjson parson"
 
-# note: macOS's system openssl seems to have a bit differnt output format.
-# it's preferred for this script.
+# note: macOS's system openssl seems to have a bit differnt output format
+# from the homebrew version. it's preferred for this script.
 if type /usr/bin/openssl; then
 dosha256() {
 	/usr/bin/openssl sha256 $1
