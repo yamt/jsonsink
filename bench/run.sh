@@ -13,7 +13,7 @@ dosha256() {
 fi
 
 # quick test
-printf "%13.13s:0b4864bde11d7f8893994605eca96bfc928337d3b04f1a08fcf8a515ca08d4ac\n" expected >&2
+printf "%15.15s:0b4864bde11d7f8893994605eca96bfc928337d3b04f1a08fcf8a515ca08d4ac\n" expected >&2
 for t in $TESTS; do
 	printf "%15.15s:" $t >&2
 	./$t --test | python -m json.tool | dosha256 >&2
