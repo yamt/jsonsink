@@ -62,8 +62,8 @@ A small and fast JSON producer written in C.
     `cJSON` uses "%1.15g" if it's enough to maintain the round-trip conversion for
     the specific value and otherwise falls back to "%1.17g".
 
-  * `jsonsink+jnum`, `RapidJSON`, and `LJSON` use more performant implementations
-    of the conversion.
+  * `jsonsink+jnum`, `jsonsink+fpconv`, `RapidJSON`, and `LJSON` use more
+    performant implementations of the conversion.
 
   * `FlatBuffers` is very fast because it doesn't involve the conversion.
 
