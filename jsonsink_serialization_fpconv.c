@@ -38,6 +38,12 @@
 #include "fpconv.h"
 #include "jsonsink.h"
 
+/*
+ * fpconv_dtoa() outputs 24 bytes at the maximum.
+ * it doesn't NUL-terminate the result.
+ */
+#define FPCONV_MAX_OUTPUT_LEN 24
+
 void
 jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
 {
@@ -55,12 +61,8 @@ jsonsink_add_double(struct jsonsink *s, double v)
 {
         JSONSINK_ASSERT(!isnan(v));
         JSONSINK_ASSERT(!isinf(v));
-        /*
-         * fpconv_dtoa() outputs 24 bytes at the maximum.
-         * it doesn't NUL-terminate the result.
-         */
-        const size_t maxlen = 24;
-        char tmp[maxlen];
+        const size_t maxlen = FPCONV_MAX_OUTPUT_LEN;
+        char tmp[FPCONV_MAX_OUTPUT_LEN];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = fpconv_dtoa(v, dest != NULL ? dest : tmp);
         JSONSINK_ASSUME(ret < maxlen);

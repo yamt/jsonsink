@@ -94,7 +94,7 @@ bench(const char *label, int (*fn)(unsigned int n, const double *data_double,
         if (test_run) {
                 n = 1;
         }
-        const unsigned int ndata = 32;
+#define ndata 32
         uint32_t data_u32[ndata];
         double data_double[ndata * 4];
         rng_init(&rng, 0x12345678);

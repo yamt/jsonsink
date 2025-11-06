@@ -44,11 +44,18 @@
 #include "jnum.h"
 #include "jsonsink.h"
 
+#define MAX_STR_SIZE_U32 sizeof("4294967295")
+#define MAX_STR_SIZE_S32 sizeof("-2147483648")
+/*
+ * the maximum length of the scientific notation of IEEE 754 double is 23.
+ */
+#define MAX_STR_SIZE_DOUBLE (23 + 1)
+
 void
 jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
 {
-        const size_t maxlen = sizeof("4294967295");
-        char tmp[maxlen];
+        const size_t maxlen = MAX_STR_SIZE_U32;
+        char tmp[MAX_STR_SIZE_U32];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_ltoa(v, dest != NULL ? dest : tmp);
         JSONSINK_ASSUME(ret < maxlen);
@@ -58,8 +65,8 @@ jsonsink_add_uint32(struct jsonsink *s, uint32_t v)
 void
 jsonsink_add_int32(struct jsonsink *s, int32_t v)
 {
-        const size_t maxlen = sizeof("-2147483648");
-        char tmp[maxlen];
+        const size_t maxlen = MAX_STR_SIZE_S32;
+        char tmp[MAX_STR_SIZE_S32];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_itoa(v, dest != NULL ? dest : tmp);
         JSONSINK_ASSUME(ret < maxlen);
@@ -71,12 +78,8 @@ jsonsink_add_double(struct jsonsink *s, double v)
 {
         JSONSINK_ASSERT(!isnan(v));
         JSONSINK_ASSERT(!isinf(v));
-        /*
-         * the maximum length of the scientific notation of IEEE 754 double
-         * is 23.
-         */
-        const size_t maxlen = 23 + 1;
-        char tmp[maxlen];
+        const size_t maxlen = MAX_STR_SIZE_DOUBLE;
+        char tmp[MAX_STR_SIZE_DOUBLE];
         void *dest = jsonsink_add_serialized_value_reserve(s, maxlen);
         int ret = jnum_dtoa(v, dest != NULL ? dest : tmp);
         JSONSINK_ASSUME(ret < maxlen);
