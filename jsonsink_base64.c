@@ -74,6 +74,7 @@ loadbe(const uint8_t p[3])
 static uint32_t
 expand(uint32_t x)
 {
+        BASE64_ASSUME((x & 0xff000000) == 0);
         return ((x << 6) & 0x3f000000) | ((x << 4) & 0x003f0000) |
                ((x << 2) & 0x00003f00) | (x & 0x0000003f);
 }
@@ -81,8 +82,8 @@ expand(uint32_t x)
 static uint32_t
 byteswap(uint32_t x)
 {
-        return ((x << 24) & 0x3f000000) | ((x << 8) & 0x003f0000) |
-               ((x >> 8) & 0x00003f00) | ((x >> 24) & 0x0000003f);
+        return ((x << 24) & 0xff000000) | ((x << 8) & 0x00ff0000) |
+               ((x >> 8) & 0x0000ff00) | ((x >> 24) & 0x000000ff);
 }
 
 static uint32_t
@@ -134,7 +135,7 @@ enc3(const uint8_t p[3], char dst[4], unsigned int srclen)
 }
 
 static size_t
-base64size(size_t srclen)
+base64encode_size(size_t srclen)
 {
         size_t bsz = (srclen + 2) / 3 * 4;
         BASE64_ASSUME(srclen / 3 == bsz / 4 || srclen / 3 + 1 == bsz / 4);
@@ -182,7 +183,7 @@ jsonsink_add_binary_base64(struct jsonsink *s, const void *p, size_t sz)
                 if (len > maxchunksize) {
                         len = maxchunksize;
                 }
-                size_t bsz = base64size(len);
+                size_t bsz = base64encode_size(len);
                 JSONSINK_ASSUME(bsz <= JSONSINK_MAX_RESERVATION);
                 void *dest = jsonsink_reserve_buffer(s, bsz);
                 if (dest != NULL) {
